@@ -1,0 +1,37 @@
+:root {
+  --primary: #e61723;
+  --primary-light: #e6646c;
+  --background: #ffffff;
+  --background-light: #fafafa;
+  --bg-card: #fbfbfb;
+  --bg-card-hover: #e1e1e1;
+  --bg-input: #f3f3f3;
+  --text: #000000;
+  --text-r: #ffffff;
+  --text-light: #858585;
+  --nav: #bebebe;
+  --btn-bg: #ffffff;
+  --btn-hover: #ececec;
+  --border: #ececec;
+  --box-shadow: #d4d4d4cf;
+  --scrollbar: #cdcdcd;
+}
+
+.dark {
+  --primary: #e61723;
+  --primary-light: #eb454f;
+  --background: #1f1f1f;
+  --background-light: #282828;
+  --bg-card: #2a2a2a;
+  --bg-card-hover: #3e3d3d;
+  --bg-input: #333333;
+  --text: #ffffff;
+  --text-r: #000000;
+  --text-light: #858585;
+  --nav: #bebebe;
+  --btn-bg: #444444;
+  --btn-hover: #3c3c3c;
+  --border: #ececec;
+  --box-shadow: #000000cf;
+  --scrollbar: #4a4a4a;
+}

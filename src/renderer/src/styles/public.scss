@@ -1,0 +1,122 @@
+@use '@renderer/styles/color' as *;
+
+@font-face {
+  font-family: harmonyos-sans-sc;
+  font-weight: 400;
+  src: url(@renderer/assets/fonts/HarmonyOS_Sans_SC_Light.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: harmonyos-sans-sc;
+  font-weight: 500;
+  src: url(@renderer/assets/fonts/HarmonyOS_Sans_SC_Regular.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: harmonyos-sans-sc;
+  font-weight: 700;
+  src: url(@renderer/assets/fonts/HarmonyOS_Sans_SC_Medium.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: harmonyos-sans-sc;
+  font-weight: 900;
+  src: url(@renderer/assets/fonts/HarmonyOS_Sans_SC_Bold.woff2) format('woff2');
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background-color: $background;
+  color: $text;
+  font-size: 14px;
+  transition-duration: 0.5s !important;
+  transition-property: background-color, color;
+  user-select: none;
+  font-family: harmonyos-sans-sc, 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+  font-weight: 500;
+}
+
+body:not(.mac) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    border-radius: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: $scrollbar;
+    border-radius: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: $scrollbar;
+  }
+}
+
+a {
+  cursor: pointer;
+  transition-duration: 0.5s;
+
+  &:hover {
+    color: $primary;
+  }
+}
+
+.fixed-width {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.page {
+  height: 100%;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+
+  .page-title {
+    font-size: 18px;
+    font-weight: bold;
+    padding-right: 40px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .body {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 40px;
+    padding-bottom: 20px;
+  }
+
+  & > .loading > .half-circle-spinner {
+    margin-right: 100px;
+  }
+}
+
+.rotate {
+  animation: rotate 10s linear infinite;
+
+  &.pause {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

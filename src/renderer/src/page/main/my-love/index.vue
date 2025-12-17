@@ -1,0 +1,281 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import userDataService from '@renderer/service/userDataService'
+import useModal from '@renderer/hooks/useModal'
+import CreatePlaylist from '@renderer/components/create-playlist.vue'
+import DownloadTaskList from '@renderer/components/download-task-list.vue'
+
+const Modal = useModal()
+
+const playlist = userDataService.lovePlaylists
+const customPlaylists = userDataService.customPlaylists
+const singerList = userDataService.loveSingers
+
+const curTab = ref('tab1')
+
+function createPlaylist() {
+  const modal = Modal.create({
+    title: '新建歌单',
+    width: '420px',
+    content: CreatePlaylist,
+    footer: [
+      {
+        text: '取消',
+        type: 'default',
+        onClick: () => {
+          modal.close()
+        },
+      },
+      {
+        text: '确定',
+        type: 'primary',
+        onClick: async (instance) => {
+          try {
+            await instance.onOk()
+            modal.close()
+          } catch (_error) {}
+        },
+      },
+    ],
+  })
+}
+</script>
+
+<template>
+  <div class="page">
+    <a-tabs v-model:activeKey="curTab" class="tabs">
+      <a-tab-pane key="tab1" tab="我的收藏"></a-tab-pane>
+      <a-tab-pane key="tab2" tab="我的下载"></a-tab-pane>
+    </a-tabs>
+    <div class="body" v-if="curTab === 'tab1'">
+      <h1 class="title">私人歌单</h1>
+      <ul class="playlist">
+        <li
+          v-for="item in customPlaylists"
+          :key="item.id"
+          @click="$router.push(`/custom-playlist/${item.id}`)"
+        >
+          <template v-if="item.id === 'my-love-songs'">
+            <img v-if="item.cover" class="cover" :src="item.cover + '?param=200y200'" alt="" />
+            <div class="my-love" v-else>
+              <Iconfont name="icon-love-fill"></Iconfont>
+            </div>
+          </template>
+          <template v-else>
+            <img
+              v-if="item.cover.startsWith('http')"
+              class="cover"
+              :src="item.cover + '?param=200y200'"
+              alt=""
+            />
+            <img v-else class="cover" :src="item.cover" alt="" />
+          </template>
+          <a>{{ item.name }}</a>
+        </li>
+        <li>
+          <div class="add" @click="createPlaylist">
+            <a-tooltip title="创建歌单">
+              <Iconfont name="icon-folder-add"></Iconfont>
+            </a-tooltip>
+          </div>
+        </li>
+      </ul>
+
+      <h1 class="title">我喜欢的歌单</h1>
+      <ul class="playlist">
+        <li v-for="item in playlist" :key="item.id" @click="$router.push(`/playlist/${item.id}`)">
+          <img class="cover" :src="item.coverImgUrl + '?param=200y200'" alt="" />
+          <a>{{ item.name }}</a>
+        </li>
+        <li>
+          <div class="add" @click="$router.push('/playlist')">
+            <a-tooltip title="发现更多">
+              <Iconfont name="icon-arrow-right-circle"></Iconfont>
+            </a-tooltip>
+          </div>
+        </li>
+      </ul>
+
+      <h1 class="title">我喜欢的歌手</h1>
+      <ul class="singer-list">
+        <li v-for="item in singerList" :key="item.id" @click="$router.push(`/singer/${item.id}`)">
+          <img class="cover" :src="item.cover + '?param=200y200'" alt="" />
+          <a>{{ item.name }}</a>
+        </li>
+        <li>
+          <div class="add" @click="$router.push('/singer-list')">
+            <a-tooltip title="发现更多">
+              <Iconfont name="icon-arrow-right-circle"></Iconfont>
+            </a-tooltip>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="body" v-if="curTab === 'tab2'">
+      <DownloadTaskList></DownloadTaskList>
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.page {
+  :deep(.tabs) {
+    & > .ant-tabs-nav {
+      &::before {
+        display: none;
+      }
+
+      & > .ant-tabs-nav-wrap > .ant-tabs-nav-list {
+        & > .ant-tabs-tab {
+          font-size: 18px;
+
+          & > .ant-tabs-tab-btn {
+            color: $text-light !important;
+          }
+        }
+
+        & > .ant-tabs-tab-active .ant-tabs-tab-btn {
+          color: $text !important;
+        }
+
+        & > .ant-tabs-ink-bar {
+          background: $text !important;
+          display: none;
+        }
+      }
+    }
+  }
+
+  .body {
+    padding-bottom: 40px;
+
+    .title {
+      font-size: 18px;
+      margin-bottom: 20px;
+      margin-top: 60px;
+      display: flex;
+      align-items: center;
+
+      &:nth-child(1) {
+        margin-top: 0;
+      }
+    }
+
+    .playlist {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-gap: 20px 40px;
+
+      @media screen and (max-width: 1000px) {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+
+      li {
+        cursor: pointer;
+        max-width: 200px;
+
+        img {
+          width: 100%;
+          aspect-ratio: 1;
+        }
+
+        .cover {
+          border-radius: 12px;
+        }
+
+        a {
+          margin-top: 10px;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
+          text-align: center;
+        }
+      }
+
+      .add,
+      .my-love {
+        width: 100%;
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        background-color: $bg-card;
+        transition-duration: 0.5s !important;
+        transition-property: background-color, color;
+        gap: 10px;
+
+        .iconfont {
+          font-size: 50px;
+          color: $text-light;
+        }
+      }
+
+      .my-love {
+        .iconfont {
+          font-size: 50px;
+          color: $text-light;
+        }
+      }
+    }
+
+    .singer-list {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-gap: 20px 40px;
+
+      @media screen and (max-width: 1000px) {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+
+      li {
+        cursor: pointer;
+        max-width: 200px;
+
+        img {
+          width: 100%;
+          aspect-ratio: 1;
+        }
+
+        .cover {
+          border-radius: 50%;
+        }
+
+        a {
+          margin-top: 10px;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
+          text-align: center;
+        }
+      }
+
+      .add {
+        width: 100%;
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        background-color: $bg-card;
+        transition-duration: 0.5s !important;
+        transition-property: background-color, color;
+        gap: 10px;
+
+        .iconfont {
+          font-size: 50px;
+          color: $text-light;
+        }
+      }
+    }
+  }
+}
+</style>

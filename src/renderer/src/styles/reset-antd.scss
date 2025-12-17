@@ -1,0 +1,250 @@
+@use '@renderer/styles/color' as *;
+
+.ant-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+}
+
+.ant-btn-primary {
+  color: #fff;
+  background-color: $primary;
+
+  &:not([disabled]):hover {
+    background-color: $primary-light !important;
+  }
+
+  &:not([disabled]):active {
+    background-color: $primary !important;
+  }
+}
+
+.ant-btn-default {
+  background-color: $btn-bg;
+  color: $text;
+  transition-duration: 0.3s !important;
+
+  &:not([disabled]):hover {
+    color: $primary-light !important;
+    border-color: $primary-light !important;
+  }
+
+  &:disabled {
+    color: #a4a4a4 !important;
+  }
+}
+
+.ant-btn {
+  & > .iconfont {
+    margin-right: 4px;
+    font-size: 18px;
+  }
+}
+
+.ant-tabs {
+  color: $text;
+
+  .ant-tabs-tab:hover {
+    color: $primary !important;
+  }
+
+  .ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: $primary !important;
+  }
+
+  .ant-tabs-ink-bar {
+    background-color: $primary !important;
+  }
+
+  .ant-tabs-tab-btn:focus:not(:focus-visible) {
+    color: $primary !important;
+  }
+}
+
+.ant-table {
+  background: unset !important;
+  color: $text !important;
+
+  td {
+    border: none !important;
+    background: unset !important;
+  }
+
+  .ant-table-thead > tr > th {
+    background: transparent !important;
+    border: none !important;
+    color: $text !important;
+    transition: background 0.5s ease !important;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  .ant-table-tbody > tr.ant-table-row:hover > td {
+    background: $background-light !important;
+  }
+}
+
+.ant-slider {
+  .ant-slider-rail {
+    background: $btn-hover !important;
+    transition: background 0.5s ease !important;
+  }
+  .ant-slider-track {
+    background: $primary-light !important;
+  }
+  .ant-slider-handle {
+    &::after {
+      box-shadow: 0 0 0 2px $primary-light;
+      background: $background;
+      transition: background 0.5s ease !important;
+    }
+    &:hover::after,
+    &:focus::after {
+      box-shadow: 0 0 0 4px $primary !important;
+    }
+  }
+  &:hover {
+    .ant-slider-track {
+      background: $primary !important;
+    }
+    .ant-slider-handle {
+      &::after {
+        box-shadow: 0 0 0 2px $primary-light;
+      }
+    }
+  }
+}
+
+.ant-input {
+  background: $bg-input !important;
+  color: $text;
+  border-color: $text-light !important;
+  border: none !important;
+  transition: background 0.5s ease !important;
+
+  &:hover,
+  &:focus {
+    border-color: $text-light !important;
+    box-shadow: none;
+  }
+
+  &::placeholder {
+    color: $text-light !important;
+  }
+}
+
+.ant-select-dropdown {
+  background-color: $bg-card;
+
+  .ant-select-item {
+    color: $text;
+  }
+}
+
+.ant-select .ant-select-clear {
+  background: none !important;
+}
+
+.ant-modal {
+  .ant-modal-content {
+    background-color: $background;
+    box-shadow: 0px 0px 4px 0px $box-shadow;
+
+    .ant-modal-close-x {
+      color: $text;
+    }
+
+    .ant-modal-header {
+      background-color: $background;
+
+      .ant-modal-title {
+        text-align: center;
+        font-size: 20px;
+        color: $text;
+      }
+    }
+    .ant-modal-footer {
+      display: flex;
+
+      .ant-btn {
+        flex: 1;
+      }
+    }
+  }
+}
+
+.ant-popover {
+  .ant-popover-arrow:before {
+    background-color: $bg-card;
+  }
+  .ant-popover-inner {
+    background-color: $bg-card;
+
+    .ant-popover-title {
+      color: $text;
+    }
+
+    .ant-popover-inner-content {
+      color: $text;
+    }
+  }
+}
+
+.ant-progress-line {
+  margin: 0 !important;
+}
+
+.ant-form-item {
+  .ant-form-item-label > label {
+    color: $text;
+  }
+}
+
+.ant-checkbox-wrapper {
+  color: $text;
+  transition-duration: 0.5s;
+}
+.ant-checkbox:after {
+  display: none;
+}
+.ant-checkbox-wrapper .ant-checkbox-inner {
+  background-color: $background;
+  transition-duration: 0.5s;
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: $primary !important;
+  border-color: $primary !important;
+}
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox-inner {
+  border-color: $primary;
+}
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+  .ant-checkbox-checked:not(.ant-checkbox-disabled):after {
+  border-color: $primary !important;
+}
+
+.ant-radio-wrapper {
+  color: $text;
+  transition-duration: 0.5s;
+
+  .ant-radio-inner {
+    border-color: $primary !important;
+    background: transparent;
+  }
+
+  .ant-radio-checked {
+    .ant-radio-inner {
+      background-color: $primary !important;
+
+      &:after {
+        background-color: $background !important;
+      }
+    }
+    &:after {
+      border-color: $primary !important;
+    }
+  }
+}
