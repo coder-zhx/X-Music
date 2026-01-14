@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getToplist } from '@renderer/api'
+import { getToplist } from '@renderer/common/api'
 import { Toplist } from '@renderer/common/types/music'
 import { ref } from 'vue'
 

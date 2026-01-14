@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import Search from '@renderer/components/search.vue'
 import playService from '@renderer/service/playService'
 import { useRoute } from 'vue-router'
-import { getSuggestMultimatch, searchSongs } from '@renderer/api'
+import { getSuggestMultimatch, searchSongs } from '@renderer/common/api'
 import { Song } from '@renderer/common/types/music'
 
 const route = useRoute()

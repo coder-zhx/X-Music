@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSingerDetail } from '@renderer/utils/web-spider'
+import { getSingerDetail } from '@renderer/common/utils/web-spider'
 import { computed, onActivated, onDeactivated, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import playService from '@renderer/service/playService'

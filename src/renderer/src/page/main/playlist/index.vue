@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { getPlaylist } from '@renderer/api'
+import { getPlaylist } from '@renderer/common/api'
 import { PlaylistDetail } from '@renderer/common/types/music'
-import { getPlaylistCategory } from '@renderer/utils/web-spider'
+import { getPlaylistCategory } from '@renderer/common/utils/web-spider'
 import { ref } from 'vue'
 
 defineOptions({

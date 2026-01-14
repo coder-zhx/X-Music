@@ -1,4 +1,4 @@
-import { getTopSongsOfSinger } from '@renderer/api'
+import { getTopSongsOfSinger } from '@renderer/common/api'
 import { Song, Toplist } from '@renderer/common/types/music'
 
 /**

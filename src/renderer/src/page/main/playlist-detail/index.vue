@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getPlaylistDetail, getCommentList } from '@renderer/api'
+import { getPlaylistDetail, getCommentList } from '@renderer/common/api'
 import SongTable from '@renderer/components/song-table.vue'
 import { computed, onActivated, onDeactivated, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'

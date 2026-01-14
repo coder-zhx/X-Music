@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSingerList } from '@renderer/api'
+import { getSingerList } from '@renderer/common/api'
 import { Singer } from '@renderer/common/types/music'
 import { ref, watch } from 'vue'
 

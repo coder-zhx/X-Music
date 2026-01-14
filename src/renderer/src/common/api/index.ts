@@ -1,13 +1,7 @@
 import { Playlist, Singer, Toplist } from '@renderer/common/types/music'
-import { urlEncode } from '@renderer/utils/common'
-import http from '@renderer/utils/http'
+import { urlEncode } from '@renderer/common/utils/common'
+import http from '@renderer/common/utils/http'
 import { sampleSize } from 'lodash-es'
-import storeService from '@renderer/service/storeService'
-
-let baseUrl = ''
-storeService.get('apiServerPort').then((port) => {
-  baseUrl = `http://localhost:${port}`
-})
 
 interface Res {
   code: number
@@ -30,7 +24,7 @@ export async function getRecommendData() {
  * 获取推荐歌单
  */
 export async function getRecommendPlaylist(): Promise<Playlist[]> {
-  const res: Res = await http.get(`${baseUrl}/personalized?limit=60`)
+  const res: Res = await http.get(`/personalized?limit=60`)
   if (res.code === 200) {
     return sampleSize(res.result, 12)
   }
@@ -41,7 +35,7 @@ export async function getRecommendPlaylist(): Promise<Playlist[]> {
  * 获取推荐歌手
  */
 export async function getRecommendSinger(): Promise<Singer[]> {
-  const res: Res = await http.get(`${baseUrl}/top/artists?offset=0&limit=60`)
+  const res: Res = await http.get(`/top/artists?offset=0&limit=60`)
   if (res.code === 200) {
     return sampleSize(res.artists, 6)
   }
@@ -68,7 +62,7 @@ export async function getSingerList(param: {
     area: param.area ?? -1,
     initial: param.initial,
   }
-  return await http.get(`${baseUrl}/artist/list`, { params })
+  return await http.get(`/artist/list`, { params })
 }
 
 /**
@@ -80,17 +74,17 @@ export async function getPlaylist(param: { pageNum: number; pageSize: number; ca
     offset: (param.pageNum - 1) * param.pageSize,
     cat: param.cat,
   }
-  return await http.get(`${baseUrl}/top/playlist`, { params })
+  return await http.get(`/top/playlist`, { params })
 }
 
 /**
  * 获取歌单详情
  */
 export async function getPlaylistDetail(id: number) {
-  const res: Res = await http.get(`${baseUrl}/playlist/detail?id=${id}`)
+  const res: Res = await http.get(`/playlist/detail?id=${id}`)
   if (res.code === 200) {
     const ids = res.playlist.trackIds.map((t) => t.id).join()
-    const res2: Res = await http.get(`${baseUrl}/song/detail?ids=${ids}`)
+    const res2: Res = await http.get(`/song/detail?ids=${ids}`)
     if (res2.code === 200) {
       res.playlist.tracks = res2.songs
     }
@@ -129,7 +123,7 @@ export async function getCommentList(param: {
  * 获取歌曲详情
  */
 export async function getSongDetail(id: number): Promise<any> {
-  const res: Res = await http.get(`${baseUrl}/song/detail`, { params: { ids: id } })
+  const res: Res = await http.get(`/song/detail`, { params: { ids: id } })
   if (res.code === 200) {
     return res.songs[0]
   }
@@ -139,7 +133,7 @@ export async function getSongDetail(id: number): Promise<any> {
  * 获取歌曲音质详情
  */
 export async function getSongMusicDetail(id: number): Promise<any> {
-  const res: Res = await http.get(`${baseUrl}/song/music/detail`, { params: { id } })
+  const res: Res = await http.get(`/song/music/detail`, { params: { id } })
   if (res.code === 200) {
     return res.data
   }
@@ -167,7 +161,7 @@ export async function getSongUrl(id: number, br: number): Promise<any> {
  * 获取歌词
  */
 export async function getLyric(id: number): Promise<any> {
-  return await http.get(`${baseUrl}/lyric?id=${id}`)
+  return await http.get(`/lyric?id=${id}`)
 }
 
 /**
@@ -247,7 +241,7 @@ export async function getTopSongsOfSinger(param: { id: number; top: number }): P
  * 获取榜单列表
  */
 export async function getToplist(): Promise<Toplist[]> {
-  const res: Res = await http.get(`${baseUrl}/toplist/detail`)
+  const res: Res = await http.get(`/toplist/detail`)
   if (res.code === 200) {
     return res.list
   }
@@ -258,7 +252,7 @@ export async function getToplist(): Promise<Toplist[]> {
  * 获取相似MV列表
  */
 export async function getSimiMvList(id: number): Promise<Res> {
-  return await http.get(`${baseUrl}/simi/mv?mvid=${id}`)
+  return await http.get(`/simi/mv?mvid=${id}`)
 }
 
 /**
@@ -274,28 +268,28 @@ export async function getTopMvList(param: {
     limit: param.pageSize,
     offset: (param.pageNum - 1) * param.pageSize,
   }
-  return await http.get(`${baseUrl}/top/mv`, { params })
+  return await http.get(`/top/mv`, { params })
 }
 
 /**
  * 获取歌手的MV
  */
 export async function getSongerMvList(id: number): Promise<Res> {
-  return await http.get(`${baseUrl}/artist/mv?id=${id}`)
+  return await http.get(`/artist/mv?id=${id}`)
 }
 
 /**
  * 获取MV详情
  */
 export async function getMvDetail(id: number): Promise<Res> {
-  return await http.get(`${baseUrl}/mv/detail?mvid=${id}`)
+  return await http.get(`/mv/detail?mvid=${id}`)
 }
 
 /**
  * 获取MV播放地址
  */
 export async function getMvUrl(id: number): Promise<Res> {
-  return await http.get(`${baseUrl}/mv/url?id=${id}`)
+  return await http.get(`/mv/url?id=${id}`)
 }
 
 /**
@@ -312,7 +306,7 @@ export async function getMvComment(param: {
     limit: param.pageSize,
     offset: (param.pageNum - 1) * param.pageSize,
   }
-  return await http.get(`${baseUrl}/comment/mv`, { params })
+  return await http.get(`/comment/mv`, { params })
 }
 
 /**
@@ -329,5 +323,48 @@ export async function getSongComment(param: {
     limit: param.pageSize,
     offset: (param.pageNum - 1) * param.pageSize,
   }
-  return await http.get(`${baseUrl}/comment/music`, { params })
+  return await http.get(`/comment/music`, { params })
+}
+
+/**
+ * 获取登录二维码的key
+ */
+export async function getQrcodeKey(): Promise<Res> {
+  return await http.get(`/login/qr/key`, { params: { timestamp: Date.now() } })
+}
+
+/**
+ * 获取登录二维码
+ */
+export async function getQrcode(key: string): Promise<Res> {
+  return await http.get(`/login/qr/create`, {
+    params: { key, qrimg: 1, timestamp: Date.now() },
+  })
+}
+
+/**
+ * 检测二维码扫码状态
+ */
+export async function qrcodeCheck(key: string): Promise<Res> {
+  return await http.get(`/login/qr/check`, {
+    params: { key, timestamp: Date.now() },
+  })
+}
+
+/**
+ * 检查登录状态
+ */
+export async function loginCheck(): Promise<Res> {
+  return await http.get(`/login/status`, {
+    params: { timestamp: Date.now() },
+  })
+}
+
+/**
+ * 退出登录
+ */
+export async function logout(): Promise<Res> {
+  return await http.get(`/logout`, {
+    params: { timestamp: Date.now() },
+  })
 }

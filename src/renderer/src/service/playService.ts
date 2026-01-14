@@ -1,10 +1,10 @@
 import { ref, toRaw, watch } from 'vue'
-import { getSongUrl } from '@renderer/api'
-import { localStorageHelper } from '@renderer/utils/storage-helper'
+import { getSongUrl } from '@renderer/common/api'
+import { localStorageHelper } from '@renderer/common/utils/storage-helper'
 import { Song } from '@renderer/common/types/music'
 import { message } from 'ant-design-vue'
 import broadcastService from './broadcastService'
-import { getExtFromUrl } from '@renderer/utils/common'
+import { getExtFromUrl } from '@renderer/common/utils/common'
 
 const LOOPMODES = ['LISTLOOP', 'SINGLELOOP', 'RANDOM']
 class PlayService {

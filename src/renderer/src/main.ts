@@ -20,7 +20,7 @@ import PlayingIcon from './components/playing-icon.vue'
 import Scroller from './components/scroller.vue'
 
 import global from './plugins/global'
-import { getOS } from './utils/common'
+import { getOS } from './common/utils/common'
 
 message.config({
   top: `50%`,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSuggest } from '@renderer/api'
+import { getSuggest } from '@renderer/common/api'
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { debounce } from 'lodash-es'

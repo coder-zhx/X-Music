@@ -1,4 +1,4 @@
-import { getLyric } from '@renderer/api'
+import { getLyric } from '@renderer/common/api'
 import playService from '@renderer/service/playService'
 import { ref, toRaw, watch } from 'vue'
 import broadcastService from './broadcastService'

@@ -4,12 +4,17 @@ import PathSelect from '@renderer/components/path-select.vue'
 import { ChromePicker } from 'vue-color'
 import 'vue-color/style.css'
 import { useAppStore } from '@renderer/stores/app'
+import { useUserStore } from '@renderer/stores/user'
+import useModal from '@renderer/hooks/useModal'
 import { message } from 'ant-design-vue'
 import { SongBrOptions, FileNameFormatOptions } from '@renderer/common/consts/common'
 import broadcastService from '@renderer/service/broadcastService'
 import lyricService from '@renderer/service/lyricService'
+import LoginModal from '@renderer/components/login-modal.vue'
 
 const appStore = useAppStore()
+const userStore = useUserStore()
+const Modal = useModal()
 
 const defaultDownloadPath = ref('')
 const form = ref(appStore.systemConfig)
@@ -59,6 +64,38 @@ async function showDeskLyric() {
 async function openAtLogin() {
   await window.electron.ipcRenderer.invoke('app:openAtLogin', form.value.autoStart)
 }
+
+async function onLogin() {
+  Modal.create({
+    width: '420px',
+    content: LoginModal,
+  })
+}
+
+function onLogout() {
+  const modal = Modal.create({
+    title: '提示',
+    width: '420px',
+    content: '确定退出登录吗？',
+    footer: [
+      {
+        text: '取消',
+        type: 'default',
+        onClick: () => {
+          modal.close()
+        },
+      },
+      {
+        text: '确定',
+        type: 'primary',
+        onClick: async () => {
+          await userStore.logout()
+          modal.close()
+        },
+      },
+    ],
+  })
+}
 </script>
 
 <template>
@@ -67,17 +104,22 @@ async function openAtLogin() {
 
     <div class="body">
       <div class="group-list">
-        <!-- <div class="group">
+        <div class="group">
           <div class="group-name">账号</div>
           <div class="group-content">
             <div class="item">
-              <a-button type="primary">
+              <a-button type="primary" @click="onLogin" v-if="!userStore.isLogin">
                 <Iconfont name="icon-scan"></Iconfont>
                 扫码登录
               </a-button>
+              <div class="account" v-if="userStore.isLogin">
+                <img class="avatar" :src="userStore.profile?.avatarUrl" />
+                <span class="nickname">{{ userStore.profile?.nickname }}</span>
+                <a-button type="primary" @click="onLogout"> 退出登录 </a-button>
+              </div>
             </div>
           </div>
-        </div> -->
+        </div>
         <div class="group">
           <div class="group-name">常规</div>
           <div class="group-content">
@@ -264,6 +306,22 @@ async function openAtLogin() {
         .item-title {
           color: $text-light;
           margin-bottom: 10px;
+        }
+
+        .account {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+
+          .avatar {
+            border-radius: 50%;
+            height: 30px;
+          }
+
+          .nickname {
+            font-size: 16px;
+            font-weight: 500;
+          }
         }
 
         .max-cache {

@@ -1,4 +1,4 @@
-import { getRecommendData } from '@renderer/api'
+import { getRecommendData } from '@renderer/common/api'
 import { defineStore } from 'pinia'
 import { Playlist, Singer, Toplist } from '@renderer/common/types/music'
 

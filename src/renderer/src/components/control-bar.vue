@@ -11,7 +11,7 @@ import appService from '@renderer/service/appService'
 import broadcastService from '@renderer/service/broadcastService'
 import { useAppStore } from '@renderer/stores/app'
 import { SongBrOptions } from '@renderer/common/consts/common'
-import { adjustColorBrightness, getImgColors } from '@renderer/utils/color'
+import { adjustColorBrightness, getImgColors } from '@renderer/common/utils/color'
 
 const appStore = useAppStore()
 

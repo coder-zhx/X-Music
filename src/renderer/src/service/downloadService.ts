@@ -1,9 +1,9 @@
-import { getSongUrl } from '@renderer/api'
+import { getSongUrl } from '@renderer/common/api'
 import { message } from 'ant-design-vue'
 import { ref, watch } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
-import { localStorageHelper } from '@renderer/utils/storage-helper'
-import { getExtFromUrl } from '@renderer/utils/common'
+import { localStorageHelper } from '@renderer/common/utils/storage-helper'
+import { getExtFromUrl } from '@renderer/common/utils/common'
 
 export interface DownloadTask {
   type: 'song' | 'mv'

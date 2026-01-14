@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getCommentList, getMvDetail, getMvUrl, getSongerMvList } from '@renderer/api'
+import { getCommentList, getMvDetail, getMvUrl, getSongerMvList } from '@renderer/common/api'
 import { computed, onActivated, onDeactivated, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import videojs from 'video.js'

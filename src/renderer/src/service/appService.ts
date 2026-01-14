@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue'
-import { getImgColors } from '@renderer/utils/color'
+import { getImgColors } from '@renderer/common/utils/color'
 
 class AppService {
   isDark = ref(false)

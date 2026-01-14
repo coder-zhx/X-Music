@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSongComment } from '@renderer/api'
+import { getSongComment } from '@renderer/common/api'
 import { ref, computed, onUnmounted, watch } from 'vue'
 import { uniqBy } from 'lodash-es'
 import { Comment } from '@renderer/common/types/music'
