@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import ControlBar from '@renderer/components/control-bar.vue'
 import { useAppStore } from '@renderer/stores/app'
+import { useUserStore } from '@renderer/stores/user'
 import { HalfCircleSpinner } from 'epic-spinners'
 import playService from '@renderer/service/playService'
 import { computed, onMounted, ref } from 'vue'
 import pageAlive from '@renderer/components/page-alive.vue'
 
 const appStore = useAppStore()
+const userStore = useUserStore()
 const loading = ref(false)
 
 const showFooter = computed(() => {
@@ -16,6 +18,7 @@ const showFooter = computed(() => {
 loadData()
 async function loadData() {
   loading.value = true
+  await userStore.checkLogin()
   await appStore.getRecommendData()
   loading.value = false
 }

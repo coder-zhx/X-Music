@@ -1,6 +1,7 @@
 import { getRecommendData } from '@renderer/common/api'
 import { defineStore } from 'pinia'
 import { Playlist, Singer, Toplist } from '@renderer/common/types/music'
+import { useUserStore } from './user'
 
 export const useAppStore = defineStore('app', {
   state: () => ({
@@ -29,7 +30,10 @@ export const useAppStore = defineStore('app', {
       this.isDark = !this.isDark
     },
     async getRecommendData() {
-      this.recommondData = await getRecommendData()
+      const userStore = useUserStore()
+      this.recommondData = await getRecommendData({
+        isLogin: userStore.isLogin,
+      })
     },
   },
 })

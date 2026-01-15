@@ -11,8 +11,13 @@ interface Res {
 /**
  * 首页推荐数据
  */
-export async function getRecommendData() {
-  const results = await Promise.all([getRecommendPlaylist(), getRecommendSinger(), getToplist()])
+export async function getRecommendData({ isLogin }) {
+  console.log(isLogin)
+  const results = await Promise.all([
+    isLogin ? getUserRecommendList() : getRecommendPlaylist(),
+    getRecommendSinger(),
+    getToplist(),
+  ])
   return {
     recommendPlaylist: results[0],
     recommendSinger: results[1],
@@ -367,4 +372,14 @@ export async function logout(): Promise<Res> {
   return await http.get(`/logout`, {
     params: { timestamp: Date.now() },
   })
+}
+
+/**
+ * 获取用户的推荐歌单
+ */
+export async function getUserRecommendList(): Promise<Playlist[]> {
+  const res: Res = await http.get(`/recommend/resource`, {
+    params: { timestamp: Date.now() },
+  })
+  return res.recommend || []
 }

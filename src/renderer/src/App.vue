@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import { useAppStore } from './stores/app'
-import { useUserStore } from './stores/user'
 import { localStorageHelper } from '@renderer/common/utils/storage-helper'
 import storeService from '@renderer/service/storeService'
 import playService from '@renderer/service/playService'
@@ -10,7 +9,6 @@ import appService from '@renderer/service/appService'
 import { watch } from 'vue'
 
 const appStore = useAppStore()
-const userStore = useUserStore()
 playService.appStore = appStore
 lyricService.appStore = appStore
 
@@ -37,7 +35,6 @@ watch(
 )
 
 async function init() {
-  userStore.checkLogin()
   appStore.isDark = !!localStorageHelper.getItem('isDark')
   const systemConfig: any = await storeService.get('systemConfig')
   appStore.systemConfig = {
