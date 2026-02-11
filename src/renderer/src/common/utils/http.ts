@@ -10,6 +10,11 @@ async function initBaseUrl() {
 
 const http = axios.create()
 
+let errorHandler: (error) => void
+export function subscribeError(fn) {
+  errorHandler = fn
+}
+
 http.interceptors.request.use(
   async function (config) {
     if (!config.url?.startsWith('http')) {
@@ -17,6 +22,18 @@ http.interceptors.request.use(
         await initBaseUrl()
       }
       config.url = `${baseUrl}${config.url}`
+      if (config.method === 'get') {
+        config.params = {
+          ...config.params,
+          cookie: localStorage.getItem('cookie'),
+        }
+      }
+      if (config.method === 'post') {
+        config.data = {
+          ...config.data,
+          cookie: localStorage.getItem('cookie'),
+        }
+      }
     }
     return config
   },
@@ -30,12 +47,10 @@ http.interceptors.response.use(
     return response.data
   },
   function (error) {
-    switch (error.status) {
-      case 401:
-        break
-      default:
-        break
+    if (errorHandler) {
+      errorHandler(error)
     }
+    return error.response.data
   },
 )
 

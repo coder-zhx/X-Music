@@ -7,17 +7,15 @@ import { Song } from '@renderer/common/types/music'
 import { cloneDeep } from 'lodash-es'
 import useModal from '@renderer/hooks/useModal'
 import CreatePlaylist from '@renderer/components/create-playlist.vue'
+import { deletePlaylist, getPlaylistDetail } from '@renderer/common/api'
+import { message } from 'ant-design-vue'
 
 const route = useRoute()
 const router = useRouter()
 const Modal = useModal()
 const playlistId = route.params.id as string
 
-const playlist = computed(() => {
-  return cloneDeep(
-    userDataService.customPlaylists.value.find((playlist) => playlist.id === playlistId),
-  )
-})
+const playlist = ref()
 const playState = playService.state
 const list = ref<Song[]>([])
 const columns = [
@@ -52,9 +50,33 @@ const customRow = (record) => {
   }
 }
 
-onMounted(async () => {
-  list.value = await userDataService.getCustomPlaylistSongs(playlistId)
+const canEdit = computed(() => {
+  if (!playlist.value) return false
+  return playlistId !== 'my-love-songs' && playlist.value?.specialType !== 5
 })
+
+onMounted(() => {
+  getData()
+})
+
+async function getData() {
+  if (playlistId && !isNaN(Number(playlistId))) {
+    const res = await getPlaylistDetail(+playlistId)
+    if (res.code === 200) {
+      playlist.value = {
+        ...res.playlist,
+        cover: res.playlist.coverImgUrl,
+      }
+      list.value = res.playlist.tracks
+    }
+  } else {
+    playlist.value = cloneDeep(
+      userDataService.customPlaylists.value.find((playlist) => playlist.id === playlistId),
+    )
+    console.log(playlist.value)
+    list.value = await userDataService.getCustomPlaylistSongs(playlistId)
+  }
+}
 
 function deleteRow(song: Song) {
   list.value = list.value.filter((item) => item.id !== song.id)
@@ -77,8 +99,15 @@ function handleDelete() {
       {
         text: '确定',
         type: 'primary',
-        onClick: () => {
-          userDataService.deleteCustomPlaylist(playlistId)
+        onClick: async () => {
+          if (playlistId && !isNaN(Number(playlistId))) {
+            const res = await deletePlaylist({ id: playlistId })
+            if (res.code !== 200) {
+              message.error('删除歌单失败')
+            }
+          } else {
+            userDataService.deleteCustomPlaylist(playlistId)
+          }
           modal.close()
           router.back()
         },
@@ -124,7 +153,8 @@ function handleEdit() {
       <a @click="$router.back()">
         <Iconfont name="icon-rollback"></Iconfont>
       </a>
-      私人歌单 | {{ playlist?.name }}
+      私人歌单
+      <span v-if="playlist?.name"> | {{ playlist?.name }}</span>
     </div>
 
     <div class="body">
@@ -141,11 +171,11 @@ function handleEdit() {
               <Iconfont name="icon-play2"></Iconfont>
               播放全部
             </a-button>
-            <a-button @click="handleEdit" v-if="playlistId !== 'my-love-songs'">
+            <a-button @click="handleEdit" v-if="canEdit">
               <Iconfont name="icon-edit"></Iconfont>
               编辑
             </a-button>
-            <a-button @click="handleDelete" v-if="playlistId !== 'my-love-songs'">
+            <a-button @click="handleDelete" v-if="canEdit">
               <Iconfont name="icon-delete"></Iconfont>
               删除
             </a-button>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getPlaylistDetail, getCommentList } from '@renderer/common/api'
+import { getPlaylistDetail, getCommentList, likePlaylist } from '@renderer/common/api'
 import SongTable from '@renderer/components/song-table.vue'
 import { computed, onActivated, onDeactivated, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -10,6 +10,7 @@ import appService from '@renderer/service/appService'
 import downloadService from '@renderer/service/downloadService'
 import { message } from 'ant-design-vue'
 import { useAppStore } from '@renderer/stores/app'
+import { useUserStore } from '@renderer/stores/user'
 import { FileNameFormat } from '@renderer/common/enums/common'
 
 defineOptions({
@@ -17,6 +18,7 @@ defineOptions({
 })
 
 const appStore = useAppStore()
+const userStore = useUserStore()
 
 const route = useRoute()
 const detailLoading = ref(false)
@@ -31,7 +33,11 @@ const commentsParam = ref({
   cursor: '-1',
 })
 const isLove = computed(() => {
-  return userDataService.lovePlaylists.value.find((playlist) => playlist.id === +route.params.id)
+  if (userStore.isLogin) {
+    return userStore.likePlaylist.find((playlist) => playlist.id === +route.params.id)
+  } else {
+    return userDataService.lovePlaylists.value.find((playlist) => playlist.id === +route.params.id)
+  }
 })
 
 const curTab = ref('1')
@@ -107,6 +113,30 @@ function getFileName(song) {
   }
 }
 
+const likeLoading = ref(false)
+async function toggle() {
+  if (!detail.value) return
+  if (userStore.isLogin) {
+    likeLoading.value = true
+    const res = await likePlaylist({
+      id: detail.value.id,
+      t: isLove.value ? 2 : 1,
+    })
+    if (res.code === 200) {
+      await userStore.getUserPlaylist()
+    } else {
+      message.error('操作失败')
+    }
+    likeLoading.value = false
+  } else {
+    if (isLove.value) {
+      userDataService.unlovePlaylist(detail.value)
+    } else {
+      userDataService.lovePlaylist(detail.value)
+    }
+  }
+}
+
 onActivated(() => {
   appService.showAppBg()
 })
@@ -148,12 +178,12 @@ onUnmounted(() => {
                 <Iconfont name="icon-play2"></Iconfont>
                 播放全部
               </a-button>
-              <a-button v-if="isLove" @click="userDataService.unlovePlaylist(detail)">
-                <Iconfont name="icon-love-fill" class="primary"></Iconfont>
+              <a-button v-if="isLove" :loading="likeLoading" @click="toggle">
+                <Iconfont v-if="!likeLoading" name="icon-love-fill" class="primary"></Iconfont>
                 取消收藏
               </a-button>
-              <a-button v-else @click="userDataService.lovePlaylist(detail)">
-                <Iconfont name="icon-love"></Iconfont>
+              <a-button v-else :loading="likeLoading" @click="toggle">
+                <Iconfont v-if="!likeLoading" name="icon-love"></Iconfont>
                 收藏
               </a-button>
               <a-button @click="download">

@@ -6,19 +6,27 @@ import playService from '@renderer/service/playService'
 import userDataService from '@renderer/service/userDataService'
 import { Singer } from '@renderer/common/types/music'
 import appService from '@renderer/service/appService'
+import { useUserStore } from '@renderer/stores/user'
+import { likeSinger } from '@renderer/common/api'
+import { message } from 'ant-design-vue'
 
 defineOptions({
   name: 'SingerDetail',
 })
 
 const route = useRoute()
+const userStore = useUserStore()
 
 const detailLoading = ref(false)
 const detail = ref<Singer>()
 const curTab = ref('1')
 
 const isLove = computed(() => {
-  return userDataService.loveSingers.value.find((singer) => singer.id === +route.params.id)
+  if (userStore.isLogin) {
+    return userStore.likeSingerlist.find((singer) => singer.id === +route.params.id)
+  } else {
+    return userDataService.loveSingers.value.find((singer) => singer.id === +route.params.id)
+  }
 })
 
 getDetail()
@@ -32,6 +40,30 @@ async function getDetail() {
   appService.appBgImg.value = detail.value?.cover + '?param=40y40'
   appService.showAppBg()
   detailLoading.value = false
+}
+
+const likeLoading = ref(false)
+async function toggle() {
+  if (!detail.value) return
+  if (userStore.isLogin) {
+    likeLoading.value = true
+    const res = await likeSinger({
+      id: detail.value.id,
+      t: isLove.value ? 2 : 1,
+    })
+    if (res.code === 200) {
+      await userStore.getUserSingerList()
+    } else {
+      message.error('操作失败')
+    }
+    likeLoading.value = false
+  } else {
+    if (isLove.value) {
+      userDataService.unloveSinger(detail.value)
+    } else {
+      userDataService.loveSinger(detail.value)
+    }
+  }
 }
 
 onActivated(() => {
@@ -70,12 +102,12 @@ onUnmounted(() => {
                 <Iconfont name="icon-play2"></Iconfont>
                 播放全部
               </a-button>
-              <a-button v-if="isLove" @click="userDataService.unloveSinger(detail)">
-                <Iconfont name="icon-love-fill" class="primary"></Iconfont>
+              <a-button v-if="isLove" :loading="likeLoading" @click="toggle">
+                <Iconfont v-if="!likeLoading" name="icon-love-fill" class="primary"></Iconfont>
                 取消收藏
               </a-button>
-              <a-button v-else @click="userDataService.loveSinger(detail)">
-                <Iconfont name="icon-love"></Iconfont>
+              <a-button v-else :loading="likeLoading" @click="toggle">
+                <Iconfont v-if="!likeLoading" name="icon-love"></Iconfont>
                 收藏
               </a-button>
             </div>

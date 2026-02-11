@@ -1,18 +1,30 @@
 <script setup lang="ts">
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import { useAppStore } from './stores/app'
+import { useUserStore } from './stores/user'
 import { localStorageHelper } from '@renderer/common/utils/storage-helper'
 import storeService from '@renderer/service/storeService'
 import playService from '@renderer/service/playService'
 import lyricService from '@renderer/service/lyricService'
 import appService from '@renderer/service/appService'
 import { watch } from 'vue'
+import { subscribeError } from './common/utils/http'
 
 const appStore = useAppStore()
+const userStore = useUserStore()
+
 playService.appStore = appStore
 lyricService.appStore = appStore
 
 const locale = zhCN
+
+subscribeError((error) => {
+  switch (error.status) {
+    case 301:
+      userStore.isLogin = false
+      break
+  }
+})
 
 init()
 

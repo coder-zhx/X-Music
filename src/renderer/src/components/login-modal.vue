@@ -48,7 +48,11 @@ async function qrCheck() {
   if (status.value === 803) {
     pause()
     close()
-    userStore.checkLogin()
+    localStorage.setItem('cookie', res.cookie)
+    await userStore.checkLogin()
+    userStore.getUserPlaylist()
+    userStore.getUserSingerList()
+    userStore.getUserLikeSongIdList()
   }
 }
 
@@ -61,7 +65,7 @@ function close() {
   <div class="login-modal">
     <div class="title">账户登录</div>
     <div class="qrcode-box">
-      <img class="qrcode" :src="qrurl" alt="" />
+      <div class="qrcode" :style="{ backgroundImage: `url(${qrurl})` }" alt="" />
       <div class="mask" v-if="status === 800">
         <Iconfont name="icon-refresh2" @click="initQrcode"></Iconfont>
       </div>
@@ -94,6 +98,8 @@ function close() {
     .qrcode {
       width: 200px;
       height: 200px;
+      border: 1px solid $border;
+      background-size: 100% 100%;
     }
 
     .mask {

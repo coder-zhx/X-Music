@@ -2,7 +2,9 @@
 import userDataService from '@renderer/service/userDataService'
 import { Song } from '@renderer/common/types/music'
 import { message } from 'ant-design-vue'
-import { PropType, ref } from 'vue'
+import { computed, PropType, ref } from 'vue'
+import { useUserStore } from '@renderer/stores/user'
+import { operatePlaylist } from '@renderer/common/api'
 
 const props = defineProps({
   song: {
@@ -15,13 +17,34 @@ const props = defineProps({
   },
 })
 
-const visible = ref<boolean>(false)
-const customPlaylists = userDataService.customPlaylists
+const userStore = useUserStore()
 
-const handleClick = (item) => {
-  userDataService.addToCustomPlaylist(item.id, props.song!)
+const visible = ref<boolean>(false)
+const playlist = computed(() => {
+  if (userStore.isLogin) {
+    return userStore.selfPlaylist
+  } else {
+    return userDataService.customPlaylists.value
+  }
+}) as any
+
+const handleClick = async (item) => {
+  if (userStore.isLogin) {
+    const res = await operatePlaylist({
+      op: 'add',
+      pid: item.id,
+      tracks: props.song!.id,
+    })
+    if (res.status === 200) {
+      message.success('添加成功')
+    } else {
+      message.error('添加失败')
+    }
+  } else {
+    userDataService.addToCustomPlaylist(item.id, props.song!)
+    message.success('添加成功')
+  }
   visible.value = false
-  message.success('添加成功')
 }
 </script>
 
@@ -32,7 +55,7 @@ const handleClick = (item) => {
     </template>
     <template #content>
       <ul class="list">
-        <div class="item" v-for="item in customPlaylists" :key="item.id" @click="handleClick(item)">
+        <div class="item" v-for="item in playlist" :key="item.id" @click="handleClick(item)">
           <div v-if="item.id === 'my-love-songs'" class="my-love">
             <Iconfont name="icon-love-fill"></Iconfont>
           </div>

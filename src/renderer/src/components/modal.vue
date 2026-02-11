@@ -16,7 +16,7 @@ const props = defineProps({
     default: '500px',
   },
   content: {
-    type: Object,
+    type: [Object, String],
   },
   componentParams: {
     type: Object,

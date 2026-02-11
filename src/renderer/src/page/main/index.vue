@@ -21,6 +21,9 @@ async function loadData() {
   await userStore.checkLogin()
   await appStore.getRecommendData()
   loading.value = false
+  userStore.getUserPlaylist()
+  userStore.getUserSingerList()
+  userStore.getUserLikeSongIdList()
 }
 
 onMounted(() => {

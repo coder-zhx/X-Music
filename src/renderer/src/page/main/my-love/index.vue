@@ -1,15 +1,35 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import userDataService from '@renderer/service/userDataService'
 import useModal from '@renderer/hooks/useModal'
 import CreatePlaylist from '@renderer/components/create-playlist.vue'
 import DownloadTaskList from '@renderer/components/download-task-list.vue'
+import { useUserStore } from '@renderer/stores/user'
 
 const Modal = useModal()
+const userStore = useUserStore()
 
-const playlist = userDataService.lovePlaylists
-const customPlaylists = userDataService.customPlaylists
-const singerList = userDataService.loveSingers
+const selfPlaylist = computed(() => {
+  if (userStore.isLogin) {
+    return userStore.selfPlaylist
+  } else {
+    return userDataService.customPlaylists.value
+  }
+})
+const likePlaylist = computed(() => {
+  if (userStore.isLogin) {
+    return userStore.likePlaylist
+  } else {
+    return userDataService.lovePlaylists.value
+  }
+})
+const likeSingerlist = computed(() => {
+  if (userStore.isLogin) {
+    return userStore.likeSingerlist
+  } else {
+    return userDataService.loveSingers.value
+  }
+})
 
 const curTab = ref('tab1')
 
@@ -33,6 +53,7 @@ function createPlaylist() {
           try {
             await instance.onOk()
             modal.close()
+            userStore.getUserPlaylist()
           } catch (_error) {}
         },
       },
@@ -51,9 +72,9 @@ function createPlaylist() {
       <h1 class="title">私人歌单</h1>
       <ul class="playlist">
         <li
-          v-for="item in customPlaylists"
+          v-for="item in selfPlaylist"
           :key="item.id"
-          @click="$router.push(`/custom-playlist/${item.id}`)"
+          @click="$router.push(`/${userStore.isLogin ? 'playlist' : 'custom-playlist'}/${item.id}`)"
         >
           <template v-if="item.id === 'my-love-songs'">
             <img v-if="item.cover" class="cover" :src="item.cover + '?param=200y200'" alt="" />
@@ -63,7 +84,7 @@ function createPlaylist() {
           </template>
           <template v-else>
             <img
-              v-if="item.cover.startsWith('http')"
+              v-if="item.cover?.startsWith('http')"
               class="cover"
               :src="item.cover + '?param=200y200'"
               alt=""
@@ -83,8 +104,12 @@ function createPlaylist() {
 
       <h1 class="title">我喜欢的歌单</h1>
       <ul class="playlist">
-        <li v-for="item in playlist" :key="item.id" @click="$router.push(`/playlist/${item.id}`)">
-          <img class="cover" :src="item.coverImgUrl + '?param=200y200'" alt="" />
+        <li
+          v-for="item in likePlaylist"
+          :key="item.id"
+          @click="$router.push(`/playlist/${item.id}`)"
+        >
+          <img class="cover" :src="item.coverImgUrl + '?param=400y400'" alt="" />
           <a>{{ item.name }}</a>
         </li>
         <li>
@@ -98,8 +123,12 @@ function createPlaylist() {
 
       <h1 class="title">我喜欢的歌手</h1>
       <ul class="singer-list">
-        <li v-for="item in singerList" :key="item.id" @click="$router.push(`/singer/${item.id}`)">
-          <img class="cover" :src="item.cover + '?param=200y200'" alt="" />
+        <li
+          v-for="item in likeSingerlist"
+          :key="item.id"
+          @click="$router.push(`/singer/${item.id}`)"
+        >
+          <img class="cover" :src="item.cover + '?param=400y400'" alt="" />
           <a>{{ item.name }}</a>
         </li>
         <li>

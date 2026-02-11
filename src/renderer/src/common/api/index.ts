@@ -12,7 +12,6 @@ interface Res {
  * 首页推荐数据
  */
 export async function getRecommendData({ isLogin }) {
-  console.log(isLogin)
   const results = await Promise.all([
     isLogin ? getUserRecommendList() : getRecommendPlaylist(),
     getRecommendSinger(),
@@ -89,7 +88,11 @@ export async function getPlaylistDetail(id: number) {
   const res: Res = await http.get(`/playlist/detail?id=${id}`)
   if (res.code === 200) {
     const ids = res.playlist.trackIds.map((t) => t.id).join()
-    const res2: Res = await http.get(`/song/detail?ids=${ids}`)
+    const res2: Res = await http.post(
+      `/song/detail`,
+      { ids },
+      { params: { timestamp: Date.now() } },
+    )
     if (res2.code === 200) {
       res.playlist.tracks = res2.songs
     }
@@ -381,5 +384,78 @@ export async function getUserRecommendList(): Promise<Playlist[]> {
   const res: Res = await http.get(`/recommend/resource`, {
     params: { timestamp: Date.now() },
   })
-  return res.recommend || []
+  return (res.recommend || []).slice(0, 12)
+}
+
+/**
+ * 获取用户收藏的歌单
+ */
+export async function getMylikePlaylist(uid: number): Promise<any[]> {
+  const res: Res = await http.get(`/user/playlist`, { params: { uid, timestamp: Date.now() } })
+  return res.playlist || []
+}
+
+/**
+ * 获取用户喜欢的歌手
+ */
+export async function getMylikeSingerlist(): Promise<any[]> {
+  const res: Res = await http.get(`/artist/sublist`, { params: { timestamp: Date.now() } })
+  return res.data || []
+}
+
+/**
+ * 新建歌单
+ */
+export async function createPlaylist(params): Promise<Res> {
+  return await http.get(`/playlist/create`, { params })
+}
+
+/**
+ * 更新歌单
+ */
+export async function updatePlaylist(params): Promise<Res> {
+  return await http.get(`/playlist/update`, { params })
+}
+
+/**
+ * 删除歌单
+ */
+export async function deletePlaylist(params): Promise<Res> {
+  return await http.get(`/playlist/delete`, { params })
+}
+
+/**
+ * 对歌单添加或删除歌曲
+ */
+export async function operatePlaylist(params): Promise<Res> {
+  return await http.get(`/playlist/tracks`, { params })
+}
+
+/**
+ * 喜欢歌曲
+ */
+export async function likeSong(params): Promise<Res> {
+  return await http.get(`/like`, { params })
+}
+
+/**
+ * 喜欢音乐列表
+ */
+export async function getLikeSongIdList(uid: number): Promise<any[]> {
+  const res: Res = await http.get(`/likelist`, { params: { uid, timestamp: Date.now() } })
+  return res.ids || []
+}
+
+/**
+ * 收藏歌单
+ */
+export async function likePlaylist(params): Promise<Res> {
+  return await http.get(`/playlist/subscribe`, { params })
+}
+
+/**
+ * 收藏歌手
+ */
+export async function likeSinger(params): Promise<Res> {
+  return await http.get(`/artist/sub`, { params })
 }

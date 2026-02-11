@@ -96,6 +96,10 @@ function onLogout() {
     ],
   })
 }
+
+function checkVersion() {
+  window.open('https://github.com/coder-zhx/X-Music/releases')
+}
 </script>
 
 <template>
@@ -226,15 +230,22 @@ function onLogout() {
           <div class="group-content about-info">
             <div class="item">
               <div class="item-title">版本:</div>
-              <div class="item-content">v1.0.0 <a-button>检查更新</a-button></div>
+              <div class="item-content">
+                v1.2.0 <a-button @click="checkVersion">检查更新</a-button>
+              </div>
             </div>
             <div class="item">
               <div class="item-title">作者:</div>
-              <div class="item-content">coder</div>
+              <div class="item-content">coder-zhx</div>
             </div>
             <div class="item">
               <div class="item-title">源代码:</div>
-              <div class="item-content">github</div>
+              <div class="item-content">
+                <a href="https://github.com/coder-zhx/X-Music" target="_blank">
+                  github
+                  <img style="height: 16px" src="@renderer/assets/img/github.png" alt="" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
