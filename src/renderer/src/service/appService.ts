@@ -51,7 +51,7 @@ class AppService {
 
   private async _getAppBgImgColor() {
     const colors = await getImgColors(this.appBgImg.value!, 20)
-    if (colors) {
+    if (colors && this.appBgVisible.value) {
       this.appBgImgColors.value = colors
       this.appBgImgMainColor.value = colors[0]
     }
@@ -65,6 +65,7 @@ class AppService {
     this.appBgVisible.value = false
   }
   clearAppBg() {
+    this.appBgVisible.value = false
     this.appBgImg.value = ''
     this.appBgImgColors.value = []
     this.appBgImgMainColor.value = []
