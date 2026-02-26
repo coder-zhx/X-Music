@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAppStore } from '@renderer/stores/app'
+import { useUserStore } from '@renderer/stores/user'
 import Search from '@renderer/components/search.vue'
 import { computed, ref } from 'vue'
 
@@ -8,8 +9,16 @@ defineOptions({
 })
 
 const appStore = useAppStore()
+const userStore = useUserStore()
 const data = computed(() => appStore.recommondData)
 const loading = ref(false)
+
+const recommendPlaylist = computed(() => {
+  if (userStore.isLogin) {
+    return data.value.recommendPlaylist.slice(0, 11)
+  }
+  return data.value.recommendPlaylist
+})
 
 async function refresh() {
   loading.value = true
@@ -35,8 +44,17 @@ async function refresh() {
       <RouterLink to="/playlist">更多<Iconfont name="icon-arrow-right"></Iconfont> </RouterLink>
     </h1>
     <ul class="playlist">
+      <li v-if="userStore.isLogin" @click="$router.push(`/today-songs`)">
+        <div class="img-wrapper">
+          <img class="disk" src="@renderer/assets/img/disk.png" alt="" />
+          <div class="cover-wrapper">
+            <img class="cover" src="@renderer/assets/img/today-songs.png" alt="" />
+          </div>
+        </div>
+        <a>每日推荐</a>
+      </li>
       <li
-        v-for="item in data.recommendPlaylist"
+        v-for="item in recommendPlaylist"
         :key="item.id"
         @click="$router.push(`/playlist/${item.id}`)"
       >

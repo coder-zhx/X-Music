@@ -11,12 +11,8 @@ interface Res {
 /**
  * 首页推荐数据
  */
-export async function getRecommendData({ isLogin }) {
-  const results = await Promise.all([
-    isLogin ? getUserRecommendList() : getRecommendPlaylist(),
-    getRecommendSinger(),
-    getToplist(),
-  ])
+export async function getRecommendData(_param) {
+  const results = await Promise.all([getRecommendPlaylist(), getRecommendSinger(), getToplist()])
   return {
     recommendPlaylist: results[0],
     recommendSinger: results[1],
@@ -435,7 +431,7 @@ export async function operatePlaylist(params): Promise<Res> {
  * 喜欢歌曲
  */
 export async function likeSong(params): Promise<Res> {
-  return await http.get(`/like`, { params })
+  return await http.get(`/like`, { params: { ...params, timestamp: Date.now() } })
 }
 
 /**
@@ -450,12 +446,26 @@ export async function getLikeSongIdList(uid: number): Promise<any[]> {
  * 收藏歌单
  */
 export async function likePlaylist(params): Promise<Res> {
-  return await http.get(`/playlist/subscribe`, { params })
+  return await http.get(`/playlist/subscribe`, { params: { ...params, timestamp: Date.now() } })
 }
 
 /**
  * 收藏歌手
  */
 export async function likeSinger(params): Promise<Res> {
-  return await http.get(`/artist/sub`, { params })
+  return await http.get(`/artist/sub`, { params: { ...params, timestamp: Date.now() } })
+}
+
+/**
+ * 每日推荐歌曲
+ */
+export async function getTodaySongs(): Promise<Res> {
+  return await http.get(`/recommend/songs`, { params: { timestamp: Date.now() } })
+}
+
+/**
+ * 每日推荐歌曲-不感兴趣
+ */
+export async function todaySongDislike(id): Promise<Res> {
+  return await http.get(`/recommend/songs/dislike`, { params: { id } })
 }

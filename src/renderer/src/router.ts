@@ -66,6 +66,11 @@ const routes = [
         name: 'mv-detail',
         component: () => import('@renderer/page/main/mv-detail/index.vue'),
       },
+      {
+        path: '/today-songs',
+        name: 'today-songs',
+        component: () => import('@renderer/page/main/today-songs/index.vue'),
+      },
     ],
   },
   {

@@ -80,6 +80,7 @@ const customRow = (record) => {
             <LoveBtn :song="record"></LoveBtn>
             <CollectBtn :song="record"></CollectBtn>
             <DownloadBtn :song="record"></DownloadBtn>
+            <slot name="opBtns" :record="record"></slot>
           </div>
         </template>
         <template v-if="column.key === 'al'">{{ record.al.name }}</template>
@@ -149,8 +150,10 @@ const customRow = (record) => {
   gap: 10px;
   font-size: 18px;
 
-  a {
-    display: inline-flex;
+  :deep() {
+    a {
+      display: inline-flex;
+    }
   }
 }
 
