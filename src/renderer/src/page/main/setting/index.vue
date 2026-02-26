@@ -231,7 +231,7 @@ function checkVersion() {
             <div class="item">
               <div class="item-title">版本:</div>
               <div class="item-content">
-                v1.2.0 <a-button @click="checkVersion">检查更新</a-button>
+                v1.2.1 <a-button @click="checkVersion">检查更新</a-button>
               </div>
             </div>
             <div class="item">
