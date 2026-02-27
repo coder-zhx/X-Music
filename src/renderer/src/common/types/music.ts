@@ -22,6 +22,7 @@ export interface PlaylistDetail {
     nickname: string
     avatarUrl: string
     signature: string
+    userId: number
   }
   playCount: number
   shareCount: number
@@ -30,6 +31,7 @@ export interface PlaylistDetail {
   tracks: Song[]
   commentCount: number
   commentThreadId: string
+  specialType: number
 }
 
 export interface Song {

@@ -5,6 +5,7 @@ import { computed, PropType } from 'vue'
 import { useUserStore } from '@renderer/stores/user'
 import { likeSong } from '@renderer/common/api'
 import { message } from 'ant-design-vue'
+import { songLoveChangeEventBus } from '@renderer/common/utils/eventBus'
 
 const props = defineProps({
   song: {
@@ -32,6 +33,7 @@ async function toggle() {
     }).then((res) => {
       if (res.code === 200) {
         userStore.getUserLikeSongIdList()
+        songLoveChangeEventBus.emit()
       } else {
         message.error('操作失败')
       }
@@ -47,6 +49,7 @@ async function toggle() {
     } else {
       userDataService.loveSong(props.song)
     }
+    songLoveChangeEventBus.emit()
   }
 }
 </script>

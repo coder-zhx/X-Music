@@ -81,7 +81,7 @@ export async function getPlaylist(param: { pageNum: number; pageSize: number; ca
  * 获取歌单详情
  */
 export async function getPlaylistDetail(id: number) {
-  const res: Res = await http.get(`/playlist/detail?id=${id}`)
+  const res: Res = await http.get(`/playlist/detail`, { params: { id, timestamp: Date.now() } })
   if (res.code === 200) {
     const ids = res.playlist.trackIds.map((t) => t.id).join()
     const res2: Res = await http.post(

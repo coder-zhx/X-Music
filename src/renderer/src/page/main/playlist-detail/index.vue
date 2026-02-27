@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getPlaylistDetail, getCommentList, likePlaylist } from '@renderer/common/api'
 import SongTable from '@renderer/components/song-table.vue'
-import { computed, onActivated, onDeactivated, onUnmounted, ref } from 'vue'
+import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import playService from '@renderer/service/playService'
 import userDataService from '@renderer/service/userDataService'
@@ -12,6 +12,7 @@ import { message } from 'ant-design-vue'
 import { useAppStore } from '@renderer/stores/app'
 import { useUserStore } from '@renderer/stores/user'
 import { FileNameFormat } from '@renderer/common/enums/common'
+import { songLoveChangeEventBus } from '@renderer/common/utils/eventBus'
 
 defineOptions({
   name: 'PlaylistDetail',
@@ -38,6 +39,16 @@ const isLove = computed(() => {
   } else {
     return userDataService.lovePlaylists.value.find((playlist) => playlist.id === +route.params.id)
   }
+})
+
+// 是否是自己创建的歌单
+const isMyPlaylist = computed(() => {
+  return userStore.isLogin && userStore.profile?.userId === detail.value?.creator?.userId
+})
+
+// 是否是红心音乐歌单
+const isMyLove = computed(() => {
+  return isMyPlaylist.value && detail.value?.specialType === 5
 })
 
 const curTab = ref('1')
@@ -137,15 +148,29 @@ async function toggle() {
   }
 }
 
+async function songLoveChangeHandler() {
+  const res = await getPlaylistDetail(+route.params.id)
+  if (res.code === 200) {
+    detail.value = res.playlist
+  }
+}
+
+onMounted(() => {
+  songLoveChangeEventBus.on(songLoveChangeHandler)
+})
+
 onActivated(() => {
   appService.showAppBg()
+  songLoveChangeEventBus.on(songLoveChangeHandler)
 })
 
 onDeactivated(() => {
   appService.hideAppBg()
+  songLoveChangeEventBus.off(songLoveChangeHandler)
 })
 onUnmounted(() => {
   appService.clearAppBg()
+  songLoveChangeEventBus.off(songLoveChangeHandler)
 })
 </script>
 
@@ -178,14 +203,16 @@ onUnmounted(() => {
                 <Iconfont name="icon-play2"></Iconfont>
                 播放全部
               </a-button>
-              <a-button v-if="isLove" :loading="likeLoading" @click="toggle">
-                <Iconfont v-if="!likeLoading" name="icon-love-fill" class="primary"></Iconfont>
-                取消收藏
-              </a-button>
-              <a-button v-else :loading="likeLoading" @click="toggle">
-                <Iconfont v-if="!likeLoading" name="icon-love"></Iconfont>
-                收藏
-              </a-button>
+              <template v-if="!isMyPlaylist">
+                <a-button v-if="isLove" :loading="likeLoading" @click="toggle">
+                  <Iconfont v-if="!likeLoading" name="icon-love-fill" class="primary"></Iconfont>
+                  取消收藏
+                </a-button>
+                <a-button v-else :loading="likeLoading" @click="toggle">
+                  <Iconfont v-if="!likeLoading" name="icon-love"></Iconfont>
+                  收藏
+                </a-button>
+              </template>
               <a-button @click="download">
                 <Iconfont name="icon-download"></Iconfont>
                 下载
