@@ -46,11 +46,6 @@ const isMyPlaylist = computed(() => {
   return userStore.isLogin && userStore.profile?.userId === detail.value?.creator?.userId
 })
 
-// 是否是红心音乐歌单
-const isMyLove = computed(() => {
-  return isMyPlaylist.value && detail.value?.specialType === 5
-})
-
 const curTab = ref('1')
 
 getData()
