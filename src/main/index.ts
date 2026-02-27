@@ -11,6 +11,24 @@ import startApiServer from './utils/apiServer'
 
 let mainWindow: BrowserWindow
 let preventQuit = true
+
+const additionalData = { myKey: 'x-music' }
+const gotTheLock = app.requestSingleInstanceLock(additionalData)
+
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (_event, _commandLine, _workingDirectory, _additionalData) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore()
+      }
+      mainWindow.show()
+      mainWindow.focus()
+    }
+  })
+}
+
 function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
