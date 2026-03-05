@@ -4,6 +4,7 @@ import playService from '@renderer/service/playService'
 import lyricService from '@renderer/service/lyricService'
 import RealPlayer from './real-player.vue'
 import FloatComment from './float-comment.vue'
+import { onKeyStroke } from '@vueuse/core'
 
 const props = defineProps({
   isFull: {
@@ -37,6 +38,11 @@ watch(
   },
 )
 
+onKeyStroke('Escape', () => {
+  console.log(111)
+  close()
+})
+
 onMounted(() => {
   playerMode.value = localStorage.getItem('playerMode') || modeList[0]
   scrollToCurLine('instant')
@@ -64,7 +70,7 @@ function close() {
 </script>
 
 <template>
-  <div class="player-wrapper">
+  <div class="player-wrapper" @keydown.esc="close" tabindex="1">
     <div class="mask" :style="style"></div>
     <div class="top-op" v-if="!isFull">
       <Iconfont name="icon-arrow-down" title="收起" @click="close"></Iconfont>

@@ -111,6 +111,11 @@ function showControlBar() {
   onMousemove()
 }
 
+function onPlayerClose() {
+  playerVisible.value = false
+  showControlBar()
+}
+
 async function showDeskLyric() {
   if (lyricService.deskLyricVisible.value) {
     await lyricService.showLyricWindow(false)
@@ -129,7 +134,7 @@ async function showDeskLyric() {
       :coverColor="coverColor"
       @mousemove="onMousemove"
       @click="showControlBar"
-      @close="playerVisible = false"
+      @close="onPlayerClose"
     >
     </Player>
   </Transition>
