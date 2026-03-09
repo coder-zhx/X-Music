@@ -184,7 +184,7 @@ async function getOtherMv() {
                 >
                   <div
                     class="cover"
-                    :style="{ backgroundImage: `url(${item.imgurl16v9 + '?param=640y360'})` }"
+                    :style="{ backgroundImage: `url(${$imgSize(item.cover, 640, 360)})` }"
                   >
                     <div class="play">
                       <Iconfont name="icon-play"></Iconfont>

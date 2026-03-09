@@ -45,7 +45,7 @@ async function getList(reset = false) {
 
   // 某些尺寸下，一页数据触发不了无限滚动，所以多请求一页数据
   if (pageNum.value === 2) {
-    getList()
+    await getList()
   }
 }
 
@@ -138,7 +138,7 @@ function onSelectCat(cat) {
       flex: 1;
       overflow: auto;
 
-      @media screen and (max-width: 1200px) {
+      @media screen and (max-width: 1400px) {
         grid-template-columns: repeat(5, 1fr);
       }
 

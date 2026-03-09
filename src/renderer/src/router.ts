@@ -62,6 +62,11 @@ const routes = [
         component: () => import('@renderer/page/main/search/index.vue'),
       },
       {
+        path: '/mv-list',
+        name: 'mv-list',
+        component: () => import('@renderer/page/main/mv-list/index.vue'),
+      },
+      {
         path: '/mv/:id',
         name: 'mv-detail',
         component: () => import('@renderer/page/main/mv-detail/index.vue'),

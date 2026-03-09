@@ -97,6 +97,24 @@ export async function getPlaylistDetail(id: number) {
 }
 
 /**
+ * 获取mv列表
+ */
+export async function getMvlist(param: {
+  pageNum: number
+  pageSize: number
+  area?: string
+  order?: string
+}) {
+  const params = {
+    limit: param.pageSize,
+    offset: (param.pageNum - 1) * param.pageSize,
+    area: param.area,
+    order: param.order,
+  }
+  return await http.get(`/mv/all`, { params })
+}
+
+/**
  * 获取评论列表
  */
 export async function getCommentList(param: {
