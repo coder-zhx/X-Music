@@ -9,7 +9,13 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
     />
     <script src="https://at.alicdn.com/t/c/font_4092279_05osabhuggsv.js"></script>
-    <script src="https://music.gdstudio.org/js/player.js"></script>
+    <script>
+      ;(function () {
+        const script = document.createElement('script')
+        script.src = 'https://music.gdstudio.org/js/player.js?t=' + Date.now()
+        document.head.appendChild(script)
+      })()
+    </script>
     <script src="./crc32.min.js"></script>
     <script src="./encrypt.js"></script>
   </head>
