@@ -67,7 +67,7 @@ function switchSort() {
       <a @click="$router.back()">
         <Iconfont name="icon-rollback"></Iconfont>
       </a>
-      歌单列表
+      MV列表
       <span class="line"></span>
       <a-popover
         overlayClassName="mv-category-filter"

@@ -62,6 +62,10 @@ async function refresh() {
           <img class="disk" src="@renderer/assets/img/disk.png" alt="" />
           <div class="cover-wrapper">
             <img class="cover" :src="item.picUrl + '?param=400y400'" alt="" />
+            <span class="playcount">
+              <Iconfont name="icon-erji"></Iconfont>
+              {{ $number2wan(item.playCount) }}
+            </span>
           </div>
         </div>
         <a>{{ item.name }}</a>
@@ -206,6 +210,20 @@ async function refresh() {
         background-color: $bg-card;
         border-radius: 6px;
         overflow: hidden;
+        position: relative;
+
+        .playcount {
+          display: flex;
+          position: absolute;
+          right: 6px;
+          top: 5px;
+          color: #fff;
+          font-size: 14px;
+
+          @media screen and (max-width: 1200px) {
+            font-size: 10px;
+          }
+        }
       }
 
       a {

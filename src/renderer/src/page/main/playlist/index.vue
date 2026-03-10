@@ -3,16 +3,19 @@ import { getPlaylist } from '@renderer/common/api'
 import { PlaylistDetail } from '@renderer/common/types/music'
 import { getPlaylistCategory } from '@renderer/common/utils/web-spider'
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 defineOptions({
   name: 'Playlist',
 })
 
+const route = useRoute()
+
 const filterVisible = ref(false)
 const loading = ref(false)
 const playlist = ref<PlaylistDetail[]>([])
 const categoryList = ref<any[]>([])
-const category = ref('华语')
+const category = ref(route.query.cat || '华语')
 const pageNum = ref(1)
 const pageSize = ref(60)
 const nomore = ref(false)
@@ -104,6 +107,10 @@ function onSelectCat(cat) {
           <li v-for="item in playlist" :key="item.id" @click="$router.push(`/playlist/${item.id}`)">
             <div class="img-wrapper">
               <img :src="$imgSize(item.coverImgUrl, 400, 400)" alt="" />
+              <span class="playcount">
+                <Iconfont name="icon-erji"></Iconfont>
+                {{ $number2wan(item.playCount) }}
+              </span>
             </div>
             <a>{{ item.name }}</a>
           </li>
@@ -151,6 +158,15 @@ function onSelectCat(cat) {
           aspect-ratio: 1;
           z-index: 1;
           background-color: $bg-card;
+
+          .playcount {
+            display: flex;
+            position: absolute;
+            right: 6px;
+            top: 5px;
+            color: #fff;
+            font-size: 14px;
+          }
 
           .disk {
             position: absolute;

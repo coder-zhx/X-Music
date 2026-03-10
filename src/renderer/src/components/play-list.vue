@@ -145,7 +145,7 @@ function scrollToCurSong() {
 }
 
 .panel {
-  height: calc(100vh - 120px);
+  height: calc(100vh - 150px);
   max-height: 800px;
   width: 400px;
   position: fixed;

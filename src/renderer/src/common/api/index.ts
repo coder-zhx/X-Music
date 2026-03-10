@@ -187,6 +187,13 @@ export async function getLyric(id: number): Promise<any> {
 }
 
 /**
+ * 获取热搜
+ */
+export async function getHotSearch(): Promise<any> {
+  return await http.get(`/search/hot/detail`)
+}
+
+/**
  * 搜索建议
  */
 export async function getSuggest(keyword: string): Promise<any> {

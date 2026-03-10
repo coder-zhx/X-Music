@@ -191,7 +191,13 @@ onUnmounted(() => {
             </div>
             <div class="desc">{{ detail.description }}</div>
             <div class="tags">
-              <span v-for="tag in detail.tags" :key="tag" class="tag">#{{ tag }}</span>
+              <span
+                v-for="tag in detail.tags"
+                :key="tag"
+                class="tag"
+                @click="$router.push(`/playlist?cat=${tag}`)"
+                >#{{ tag }}</span
+              >
             </div>
             <div class="btns">
               <a-button type="primary" @click="playService.playSongs(detail.tracks)">
@@ -288,6 +294,10 @@ onUnmounted(() => {
         flex-wrap: wrap;
         gap: 10px;
         color: $primary;
+
+        .tag {
+          cursor: pointer;
+        }
       }
 
       .btns {

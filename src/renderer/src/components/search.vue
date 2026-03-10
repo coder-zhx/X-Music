@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { getSuggest } from '@renderer/common/api'
-import { ref } from 'vue'
+import { getHotSearch, getSuggest } from '@renderer/common/api'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { debounce } from 'lodash-es'
 
@@ -8,7 +8,18 @@ const router = useRouter()
 const route = useRoute()
 
 const keyword = defineModel<string>('value', { default: '' })
-const options = ref([])
+const hotSearchKeywords = ref([])
+const suggestKeywords = ref([])
+
+const options = computed(() => {
+  if (suggestKeywords.value.length > 0) {
+    return suggestKeywords.value.map((t) => ({ value: t, label: t }))
+  } else {
+    return hotSearchKeywords.value.map((t) => ({ value: t, label: t }))
+  }
+})
+
+getHotSearchKeywords()
 
 const onSelect = debounce((value) => {
   if (!value) return
@@ -23,16 +34,18 @@ function onSearch(value: string) {
   if (value) {
     getSuggest(value).then((res) => {
       if (res.code === 200) {
-        options.value = res.result.allMatch?.map((t) => {
-          return {
-            value: t.keyword,
-            text: t.keyword,
-          }
-        })
+        suggestKeywords.value = res.result.allMatch?.map((t) => t.keyword)
       }
     })
   } else {
-    options.value = []
+    suggestKeywords.value = []
+  }
+}
+
+async function getHotSearchKeywords() {
+  const res = await getHotSearch()
+  if (res.code === 200) {
+    hotSearchKeywords.value = res.data.map((t) => t.searchWord)
   }
 }
 </script>

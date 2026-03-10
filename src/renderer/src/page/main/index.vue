@@ -46,13 +46,13 @@ onMounted(() => {
         </router-link>
       </li>
       <li>
-        <router-link to="/my-love">
-          <Iconfont name="icon-heart-fill"></Iconfont>
+        <router-link to="/mv-list">
+          <Iconfont name="icon-video"></Iconfont>
         </router-link>
       </li>
       <li>
-        <router-link to="/mv-list">
-          <Iconfont name="icon-video"></Iconfont>
+        <router-link to="/my-love">
+          <Iconfont name="icon-heart-fill"></Iconfont>
         </router-link>
       </li>
     </ul>
