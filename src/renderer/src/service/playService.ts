@@ -25,6 +25,7 @@ class PlayService {
     this._bindListener()
     this._bindShortcutKeys()
     this._watchSongList()
+    this._watchCurSong()
     this._watchState()
     window.addEventListener('beforeunload', () => {
       this._saveState()
@@ -82,6 +83,25 @@ class PlayService {
         this.playNext()
       }
     })
+    // 注册线控事件处理
+    navigator.mediaSession.setActionHandler('play', () => {
+      this.toggle()
+    })
+    navigator.mediaSession.setActionHandler('pause', () => {
+      this.toggle()
+    })
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      this.playNext()
+    })
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      this.playPrev()
+    })
+    navigator.mediaSession.setActionHandler('seekbackward', () => {
+      this.audio.currentTime = Math.max(this.audio.currentTime - 10, 0)
+    })
+    navigator.mediaSession.setActionHandler('seekforward', () => {
+      this.audio.currentTime = Math.min(this.audio.currentTime + 10, this.audio.duration)
+    })
   }
 
   private _bindShortcutKeys() {
@@ -116,6 +136,24 @@ class PlayService {
         this._saveState()
       },
       { deep: true },
+    )
+  }
+
+  private _watchCurSong() {
+    watch(
+      () => this.state.value.curSong,
+      () => {
+        if (this.state.value.curSong) {
+          // 让媒体中心显示歌曲信息
+          const song = this.state.value.curSong
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: song.name,
+            artist: song.ar?.[0]?.name || '未知艺术家',
+            album: song.al?.name || '未知专辑',
+            artwork: [{ src: song.al?.picUrl, sizes: '512x512', type: 'image/jpg' }],
+          })
+        }
+      },
     )
   }
 
