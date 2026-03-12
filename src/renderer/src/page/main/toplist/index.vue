@@ -3,6 +3,10 @@ import { getToplist } from '@renderer/common/api'
 import { Toplist } from '@renderer/common/types/music'
 import { ref } from 'vue'
 
+defineOptions({
+  name: 'Toplist',
+})
+
 const loading = ref(false)
 const list = ref<Toplist[]>([])
 

@@ -5,6 +5,10 @@ import playService from '@renderer/service/playService'
 import { Song } from '@renderer/common/types/music'
 import { message } from 'ant-design-vue'
 
+defineOptions({
+  name: 'TodaySongs',
+})
+
 const loading = ref(false)
 const songs = ref<Song[]>([])
 

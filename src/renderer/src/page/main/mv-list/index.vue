@@ -4,7 +4,7 @@ import { MvDetail } from '@renderer/common/types/music'
 import { ref } from 'vue'
 
 defineOptions({
-  name: 'Playlist',
+  name: 'Mvlist',
 })
 
 const filterVisible = ref(false)

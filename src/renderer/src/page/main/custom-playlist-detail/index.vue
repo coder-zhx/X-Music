@@ -10,6 +10,10 @@ import CreatePlaylist from '@renderer/components/create-playlist.vue'
 import { deletePlaylist, getPlaylistDetail } from '@renderer/common/api'
 import { message } from 'ant-design-vue'
 
+defineOptions({
+  name: 'CustomPlaylistDetail',
+})
+
 const route = useRoute()
 const router = useRouter()
 const Modal = useModal()
