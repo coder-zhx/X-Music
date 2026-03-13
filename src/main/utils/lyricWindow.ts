@@ -6,13 +6,15 @@ import { join } from 'path'
 const store: any = new Store()
 
 let lyricWindow: BrowserWindow
+const winWidth = 1040
+const winHeight = 200
 
 export function createLyricWindow() {
   lyricWindow = new BrowserWindow({
-    width: 1040,
-    height: 200,
-    minWidth: 1040,
-    minHeight: 200,
+    width: winWidth,
+    height: winHeight,
+    minWidth: winWidth,
+    minHeight: winHeight,
     transparent: true,
     frame: false,
     fullscreenable: false,
@@ -107,8 +109,26 @@ ipcMain.on('lyricWin:set-ignore-mouse-events', (_event, ignore, options) => {
   lyricWindow.setIgnoreMouseEvents(ignore, options)
 })
 
-ipcMain.on('lyricWin:moveWindow', (_event, deltaX, detalY) => {
+ipcMain.on('lyricWin:moveWindow', (_event, deltaX, deltaY) => {
   if (lyricWindow.isDestroyed()) return
+  if (deltaX === 0 && deltaY === 0) return
   const [x, y] = lyricWindow.getPosition()
-  lyricWindow.setPosition(x + deltaX, y + detalY)
+
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const workArea = primaryDisplay.workArea
+
+  const newX = x + deltaX
+  const newY = y + deltaY
+
+  const finalX = Math.max(
+    workArea.x - winWidth / 2,
+    Math.min(newX, workArea.x + workArea.width - winWidth / 2),
+  )
+  const finalY = Math.max(workArea.y - 100, Math.min(newY, workArea.y + workArea.height - 150))
+  lyricWindow.setBounds({
+    x: finalX,
+    y: finalY,
+    width: winWidth,
+    height: winHeight,
+  })
 })
