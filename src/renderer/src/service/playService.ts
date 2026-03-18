@@ -5,6 +5,7 @@ import { Song } from '@renderer/common/types/music'
 import { message } from 'ant-design-vue'
 import broadcastService from './broadcastService'
 import { getExtFromUrl } from '@renderer/common/utils/common'
+import logService from './logService'
 
 const LOOPMODES = ['LISTLOOP', 'SINGLELOOP', 'RANDOM']
 class PlayService {
@@ -220,7 +221,7 @@ class PlayService {
       url = 'file://' + cachedUrl
     } else {
       const res = await getSongUrl(songId, curBr)
-      url = res?.url
+      url = res?.url || res?.data?.[0]?.url
     }
     if (songId !== this.state.value.curSong!.id) {
       return
@@ -247,6 +248,7 @@ class PlayService {
     // this._bindListener()
     this.audio.src = url
     this.audio.play().catch(() => {})
+    logService.playSong(songId)
     if (positon > 0) {
       this.audio.currentTime = positon
     }

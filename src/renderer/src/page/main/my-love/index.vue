@@ -4,6 +4,7 @@ import userDataService from '@renderer/service/userDataService'
 import useModal from '@renderer/hooks/useModal'
 import CreatePlaylist from '@renderer/components/create-playlist.vue'
 import DownloadTaskList from '@renderer/components/download-task-list.vue'
+import RecentSongList from '@renderer/components/recent-song-list.vue'
 import { useUserStore } from '@renderer/stores/user'
 
 const Modal = useModal()
@@ -67,6 +68,7 @@ function createPlaylist() {
     <a-tabs v-model:activeKey="curTab" class="tabs">
       <a-tab-pane key="tab1" tab="我的收藏"></a-tab-pane>
       <a-tab-pane key="tab2" tab="我的下载"></a-tab-pane>
+      <a-tab-pane key="tab3" tab="最近播放"></a-tab-pane>
     </a-tabs>
     <div class="body" v-if="curTab === 'tab1'">
       <h1 class="title">私人歌单</h1>
@@ -142,6 +144,9 @@ function createPlaylist() {
     </div>
     <div class="body" v-if="curTab === 'tab2'">
       <DownloadTaskList></DownloadTaskList>
+    </div>
+    <div class="body" v-if="curTab === 'tab3'">
+      <RecentSongList></RecentSongList>
     </div>
   </div>
 </template>

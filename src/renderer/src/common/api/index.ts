@@ -494,3 +494,10 @@ export async function getTodaySongs(): Promise<Res> {
 export async function todaySongDislike(id): Promise<Res> {
   return await http.get(`/recommend/songs/dislike`, { params: { id } })
 }
+
+/**
+ * 最近播放-歌曲
+ */
+export async function getRecentSongList(): Promise<Res> {
+  return await http.get(`/record/recent/song`)
+}
