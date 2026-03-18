@@ -2,13 +2,17 @@ import { getLyric } from '@renderer/common/api'
 import playService from '@renderer/service/playService'
 import { ref, toRaw, watch } from 'vue'
 import broadcastService from './broadcastService'
+import { LineLyric, Song, YrcLyric } from '@renderer/common/types/music'
 
 class LyricService {
   appStore
   state = ref({
-    lyric: [] as Array<{ time: number; text: string }>,
-    currentLineIndex: 0,
+    song: null as Song | null,
+    lyric: [] as Array<LineLyric>,
+    yrcLyric: [] as Array<YrcLyric>,
+    currentLineIndex: -1,
     currentLine: '',
+    currentTime: 0,
   })
   // 桌面歌词
   deskLyricVisible = ref(false)
@@ -21,9 +25,12 @@ class LyricService {
       () => playService.state.value.curSong,
       () => {
         this.state.value = {
+          song: toRaw(playService.state.value.curSong),
           lyric: [],
-          currentLineIndex: 0,
+          yrcLyric: [],
+          currentLineIndex: -1,
           currentLine: '',
+          currentTime: 0,
         }
         this._getLyric()
       },
@@ -59,19 +66,35 @@ class LyricService {
     }
     const res = await getLyric(song.id)
     if (!res) return
-    this._parseLyric(res.lrc.lyric)
+    const lyric = this._parseLyric(res.lrc?.lyric)
+    const yrcLyric = this._parseYrcLyric(res.yrc?.lyric)
+
+    this.state.value = {
+      ...toRaw(this.state.value),
+      lyric,
+      yrcLyric,
+      currentLineIndex: -1,
+      currentLine: '',
+      currentTime: 0,
+    }
   }
 
   private _getCurrentLine() {
-    const lyric = this.state.value.lyric
+    const lyric = this.state.value.yrcLyric?.length
+      ? this.state.value.yrcLyric
+      : this.state.value.lyric
     if (!lyric.length) return
-    const currentTime = playService.state.value.currentTime
+    const currentTime = playService.state.value.currentTime * 1000
     this.state.value.currentLineIndex = lyric.findLastIndex((line) => line.time <= currentTime)
     this.state.value.currentLine = lyric[this.state.value.currentLineIndex]?.text
+    this.state.value.currentTime = playService.state.value.currentTime
   }
 
+  /**
+   * 解析行歌词
+   */
   private _parseLyric(lyric: string) {
-    if (!lyric) return
+    if (!lyric) return []
     const arr = lyric
       .split('\n')
       .map((line) => {
@@ -79,18 +102,48 @@ class LyricService {
         const match = line.match(/^\[(\d{2}):(\d{2}(?:\.\d{1,3})?)\](.*)$/)!
         if (match && match[3]) {
           return {
-            time: parseFloat(match[1]) * 60 + parseFloat(match[2]),
+            time: (parseFloat(match[1]) * 60 + parseFloat(match[2])) * 1000,
             text: match[3].trim(),
           }
         }
         return null
       })
       .filter((t) => !!t)
-    this.state.value = {
-      lyric: arr,
-      currentLineIndex: 0,
-      currentLine: '',
-    }
+    return arr
+  }
+
+  /**
+   * 解析逐字歌词
+   */
+  private _parseYrcLyric(lyric: string) {
+    if (!lyric) return []
+    const arr: any[] = []
+    lyric.split('\n').forEach((line) => {
+      if (line.startsWith('{')) return
+
+      const timeMatch = line.match(/\[(\d+),(\d+)\]/)
+      if (!timeMatch) return
+      const time = parseInt(timeMatch[1])
+      const duration = parseInt(timeMatch[2])
+
+      const wordPattern = /\((\d+),(\d+),\d+\)(.)/g
+      const words: any[] = []
+      let match
+      while ((match = wordPattern.exec(line)) !== null) {
+        words.push({
+          time: parseInt(match[1]),
+          duration: parseInt(match[2]),
+          text: match[3],
+        })
+      }
+      arr.push({
+        time,
+        text: words.map((t) => t.text).join(''),
+        duration,
+        words,
+      })
+    })
+    return arr
   }
 
   private _sendDataToLyricWindow() {

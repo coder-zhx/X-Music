@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, PropType, ref, watch } from 'vue'
+import { computed, onMounted, PropType, ref } from 'vue'
 import playService from '@renderer/service/playService'
-import lyricService from '@renderer/service/lyricService'
 import RealPlayer from './real-player.vue'
 import FloatComment from './float-comment.vue'
+import LyricList from './lyric-list.vue'
 import { onKeyStroke } from '@vueuse/core'
 
 const props = defineProps({
@@ -20,7 +20,6 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 const playState = playService.state
-const lyricState = lyricService.state
 
 const modeList = ['player', 'disk', 'simple', 'hidden']
 const playerMode = ref(modeList[0])
@@ -31,13 +30,6 @@ const style = computed(() => {
   }
 })
 
-watch(
-  () => lyricState.value.currentLineIndex,
-  () => {
-    scrollToCurLine()
-  },
-)
-
 onKeyStroke('Escape', () => {
   console.log(111)
   close()
@@ -45,18 +37,7 @@ onKeyStroke('Escape', () => {
 
 onMounted(() => {
   playerMode.value = localStorage.getItem('playerMode') || modeList[0]
-  scrollToCurLine('instant')
 })
-
-function scrollToCurLine(behavior: ScrollBehavior = 'smooth') {
-  const el = document.querySelectorAll('.lyric-line')[lyricState.value.currentLineIndex]
-  if (el) {
-    el.scrollIntoView({
-      behavior,
-      block: 'center',
-    })
-  }
-}
 
 function toggleMode() {
   const index = modeList.findIndex((mode) => mode === playerMode.value)
@@ -107,17 +88,7 @@ function close() {
             </span>
           </div>
         </div>
-        <div class="lyric">
-          <div
-            v-for="(line, index) in lyricState.lyric"
-            :key="index"
-            class="lyric-line"
-            :class="{ active: index === lyricState.currentLineIndex }"
-            @click="playService.seek(line.time)"
-          >
-            {{ line.text }}
-          </div>
-        </div>
+        <LyricList></LyricList>
       </div>
     </div>
     <FloatComment class="float-comment"></FloatComment>
@@ -201,41 +172,6 @@ function close() {
           color: #ffffff99;
         }
       }
-
-      .lyric {
-        height: 50%;
-        overflow: auto;
-        text-align: center;
-        font-size: 18px;
-        padding: 0 40px;
-
-        &::after {
-          content: '';
-          display: block;
-          height: 50%;
-        }
-
-        &::-webkit-scrollbar {
-          display: none;
-        }
-
-        .lyric-line {
-          padding: 16px 0;
-          color: #ffffff99;
-          margin: 4px 0;
-          cursor: pointer;
-
-          &:hover {
-            background: #ffffff1a;
-            border-radius: 8px;
-          }
-        }
-
-        .lyric-line.active {
-          font-size: 24px;
-          color: #ffffff;
-        }
-      }
     }
   }
 
@@ -311,14 +247,6 @@ function close() {
       height: 300px !important;
       top: -225px !important;
     }
-  }
-
-  .lyric-line {
-    font-size: 26px !important;
-  }
-
-  .lyric-line.active {
-    font-size: 36px !important;
   }
 }
 </style>

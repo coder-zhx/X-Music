@@ -7,7 +7,11 @@ import { useAppStore } from '@renderer/stores/app'
 import { useUserStore } from '@renderer/stores/user'
 import useModal from '@renderer/hooks/useModal'
 import { message } from 'ant-design-vue'
-import { SongBrOptions, FileNameFormatOptions } from '@renderer/common/consts/common'
+import {
+  SongBrOptions,
+  FileNameFormatOptions,
+  LyricModeOptions,
+} from '@renderer/common/consts/common'
 import broadcastService from '@renderer/service/broadcastService'
 import lyricService from '@renderer/service/lyricService'
 import LoginModal from '@renderer/components/login-modal.vue'
@@ -30,9 +34,9 @@ watch(
 )
 
 watch(
-  () => form.value.lyricColor,
+  [() => form.value.lyricColor, () => form.value.lyricBgColor, () => form.value.lyricMode],
   () => {
-    broadcastService.postMessage({ type: 'event:lyricColorChange' })
+    broadcastService.postMessage({ type: 'event:lyricConfigChange' })
   },
 )
 
@@ -50,6 +54,10 @@ async function clearCache() {
 
 async function resetLyricColor() {
   form.value.lyricColor = appStore.defaultLyricColor
+}
+
+async function resetLyricBgColor() {
+  form.value.lyricBgColor = appStore.defaultLyricBgColor
 }
 
 async function showDeskLyric() {
@@ -209,18 +217,42 @@ function checkVersion() {
               </a-checkbox>
             </div>
             <div class="item">
+              <div class="item-title">歌词模式</div>
+              <div class="item-content">
+                <a-radio-group v-model:value="form.lyricMode">
+                  <a-radio v-for="item in LyricModeOptions" :value="item.value" :key="item.value">
+                    {{ item.label }}
+                  </a-radio>
+                </a-radio-group>
+              </div>
+            </div>
+            <div class="item">
               <div class="item-title">歌词文字颜色</div>
               <div class="item-content lyric-color flex-y-center">
-                <span class="flex-y-center"
-                  >当前：
-                  <a-popover overlayClassName="color-picker" trigger="click">
-                    <template #content>
-                      <ChromePicker class="chrome-picker" v-model="form.lyricColor" />
-                    </template>
-                    <span class="color" :style="{ background: form.lyricColor }"></span>
-                  </a-popover>
-                </span>
-                <a-button @click="resetLyricColor">重置</a-button>
+                <div class="flex-y-center">
+                  <span class="flex-y-center"
+                    >前景色：
+                    <a-popover overlayClassName="color-picker" trigger="click">
+                      <template #content>
+                        <ChromePicker class="chrome-picker" v-model="form.lyricColor" />
+                      </template>
+                      <span class="color" :style="{ background: form.lyricColor }"></span>
+                    </a-popover>
+                  </span>
+                  <a-button @click="resetLyricColor">重置</a-button>
+                </div>
+                <div class="flex-y-center" style="margin-left: 40px">
+                  <span class="flex-y-center"
+                    >背景色：
+                    <a-popover overlayClassName="color-picker" trigger="click">
+                      <template #content>
+                        <ChromePicker class="chrome-picker" v-model="form.lyricBgColor" />
+                      </template>
+                      <span class="color" :style="{ background: form.lyricBgColor }"></span>
+                    </a-popover>
+                  </span>
+                  <a-button @click="resetLyricBgColor">重置</a-button>
+                </div>
               </div>
             </div>
           </div>

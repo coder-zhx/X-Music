@@ -12,6 +12,7 @@ export const useAppStore = defineStore('app', {
       recommendToplist: [] as Toplist[],
     },
     defaultLyricColor: '#00ff42',
+    defaultLyricBgColor: '#a0a0a0',
     systemConfig: {
       autoStart: false,
       autoPlay: false,
@@ -21,8 +22,10 @@ export const useAppStore = defineStore('app', {
       fileNameFormat: 2,
       downloadPath: '',
       deskLyric: true,
+      lyricMode: 1,
       ambientBar: true,
       lyricColor: '#00ff42',
+      lyricBgColor: '#a0a0a0',
     },
   }),
   actions: {

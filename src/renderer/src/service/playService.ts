@@ -19,6 +19,7 @@ class PlayService {
   loopMode = ref(LOOPMODES[0])
 
   private _autoNextTimer
+  private _curTimeRafId
 
   constructor() {
     this._restoreState()
@@ -55,17 +56,27 @@ class PlayService {
   }
 
   private _bindListener() {
+    const startTimeupdate = () => {
+      this.state.value.currentTime = this.audio.currentTime
+      this._curTimeRafId = requestAnimationFrame(startTimeupdate)
+    }
+    const stopTimeupdate = () => {
+      cancelAnimationFrame(this._curTimeRafId)
+    }
     this.audio.addEventListener('play', () => {
       this.state.value.isPlaying = true
+      startTimeupdate()
     })
     this.audio.addEventListener('pause', () => {
       this.state.value.isPlaying = false
+      stopTimeupdate()
     })
     this.audio.addEventListener('timeupdate', () => {
       this.state.value.currentTime = this.audio.currentTime
     })
     this.audio.addEventListener('ended', () => {
       this.state.value.isPlaying = false
+      stopTimeupdate()
       if (this.loopMode.value === 'SINGLELOOP') {
         this.playSong(this.state.value.curSong)
       } else {

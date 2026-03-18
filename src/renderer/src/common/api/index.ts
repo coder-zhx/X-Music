@@ -183,7 +183,7 @@ export async function getSongUrl(id: number, br: number): Promise<any> {
  * 获取歌词
  */
 export async function getLyric(id: number): Promise<any> {
-  return await http.get(`/lyric?id=${id}`)
+  return await http.get(`/lyric/new?id=${id}`)
 }
 
 /**

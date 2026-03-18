@@ -1,4 +1,4 @@
-import { FileNameFormat } from '../enums/common'
+import { FileNameFormat, LyricMode } from '../enums/common'
 
 export const SongBrOptions = [
   {
@@ -31,5 +31,16 @@ export const FileNameFormatOptions = [
   {
     label: '歌手-歌曲名',
     value: FileNameFormat.singerName_songName,
+  },
+]
+
+export const LyricModeOptions = [
+  {
+    label: '单行歌词',
+    value: LyricMode.single,
+  },
+  {
+    label: '双行歌词',
+    value: LyricMode.double,
   },
 ]

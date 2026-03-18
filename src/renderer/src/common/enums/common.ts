@@ -8,3 +8,8 @@ export enum DataSource {
   local = 1,
   cloud = 2,
 }
+
+export enum LyricMode {
+  single = 1,
+  double = 2,
+}

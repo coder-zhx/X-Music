@@ -152,3 +152,15 @@ export interface MvDetail {
   commentThreadId: string
   videoGroup: any[]
 }
+
+export interface LineLyric {
+  time: number
+  text: string
+}
+
+export interface YrcLyric {
+  time: number
+  text: string
+  duration: number
+  words: Array<{ time: number; duration: number; text: string }>
+}
