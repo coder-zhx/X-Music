@@ -7,6 +7,7 @@ import playService from '@renderer/service/playService'
 import lyricService from '@renderer/service/lyricService'
 import PlayList from './play-list.vue'
 import Player from './player/index.vue'
+import VoiceBtn from './voice-btn.vue'
 import appService from '@renderer/service/appService'
 import broadcastService from '@renderer/service/broadcastService'
 import { useAppStore } from '@renderer/stores/app'
@@ -219,6 +220,7 @@ async function showDeskLyric() {
             >
               词
             </a>
+            <VoiceBtn></VoiceBtn>
             <a class="ml-auto" @click="playlistPanelVisible = true">
               <Iconfont name="icon-play-list"></Iconfont>
             </a>
@@ -370,7 +372,7 @@ async function showDeskLyric() {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 20px;
+        gap: 5px;
         font-size: 24px;
         padding-left: 40px;
 
@@ -390,6 +392,7 @@ async function showDeskLyric() {
           color: $text-light;
           border-radius: 4px;
           padding: 2px 4px;
+          margin-right: 10px;
           border: 1px solid currentColor;
         }
 

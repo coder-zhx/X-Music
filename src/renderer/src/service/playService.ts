@@ -48,6 +48,10 @@ class PlayService {
     if (loopMode) {
       this.loopMode.value = loopMode
     }
+    const volume = localStorageHelper.getItem('volume')
+    if (volume || volume === 0) {
+      this.audio.volume = volume
+    }
   }
 
   private _saveState() {
@@ -366,6 +370,14 @@ class PlayService {
     } else {
       this.playSong(this.songList.value[index - 1])
     }
+  }
+
+  setVolume(value) {
+    this.audio.volume = value
+  }
+
+  getVolume() {
+    return this.audio.volume
   }
 
   changeLoopMode() {
