@@ -7,8 +7,9 @@ import storeService from '@renderer/service/storeService'
 import playService from '@renderer/service/playService'
 import lyricService from '@renderer/service/lyricService'
 import appService from '@renderer/service/appService'
-import { watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { subscribeError } from './common/utils/http'
+import logService from './service/logService'
 
 const appStore = useAppStore()
 const userStore = useUserStore()
@@ -58,6 +59,10 @@ async function init() {
   }
   lyricService.init()
 }
+
+onMounted(() => {
+  logService.log('init')
+})
 </script>
 
 <template>

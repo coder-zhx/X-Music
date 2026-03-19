@@ -9,6 +9,7 @@ import appService from '@renderer/service/appService'
 import { useUserStore } from '@renderer/stores/user'
 import { likeSinger } from '@renderer/common/api'
 import { message } from 'ant-design-vue'
+import logService from '@renderer/service/logService'
 
 defineOptions({
   name: 'SingerDetail',
@@ -40,6 +41,7 @@ async function getDetail() {
   appService.appBgImg.value = detail.value?.cover + '?param=40y40'
   appService.showAppBg()
   detailLoading.value = false
+  logService.log('singer_view', { id: +route.params.id, name: detail.value?.name })
 }
 
 const likeLoading = ref(false)

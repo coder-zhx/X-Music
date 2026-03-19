@@ -13,6 +13,7 @@ import { useAppStore } from '@renderer/stores/app'
 import { useUserStore } from '@renderer/stores/user'
 import { FileNameFormat } from '@renderer/common/enums/common'
 import { songLoveChangeEventBus } from '@renderer/common/utils/eventBus'
+import logService from '@renderer/service/logService'
 
 defineOptions({
   name: 'PlaylistDetail',
@@ -67,6 +68,7 @@ async function getDetail() {
     appService.showAppBg()
   }
   detailLoading.value = false
+  logService.log('playlist_view', { id: +route.params.id, name: detail.value?.name })
 }
 
 /**

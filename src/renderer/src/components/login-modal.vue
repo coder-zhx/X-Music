@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getQrcode, getQrcodeKey, qrcodeCheck } from '@renderer/common/api'
+import logService from '@renderer/service/logService'
 import { useUserStore } from '@renderer/stores/user'
 import { useIntervalFn } from '@vueuse/core'
 import { onMounted, onUnmounted, ref } from 'vue'
@@ -53,6 +54,10 @@ async function qrCheck() {
     userStore.getUserPlaylist()
     userStore.getUserSingerList()
     userStore.getUserLikeSongIdList()
+    logService.log('user_login', {
+      id: userStore.profile?.userId,
+      name: userStore.profile?.nickname,
+    })
   }
 }
 

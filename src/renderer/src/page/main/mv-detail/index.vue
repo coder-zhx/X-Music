@@ -6,6 +6,7 @@ import videojs from 'video.js'
 import playService from '@renderer/service/playService'
 import router from '@renderer/router'
 import { Comment, MvDetail } from '@renderer/common/types/music'
+import logService from '@renderer/service/logService'
 
 defineOptions({
   name: 'MvDetail',
@@ -108,6 +109,7 @@ async function getDetail() {
   const urlRes = await getMvUrl(mvId.value)
   url.value = urlRes?.data?.url
   loading.value = false
+  logService.log('mv_view', { id: mvId.value, name: detail.value?.name })
 }
 
 async function getComments(reset = false) {

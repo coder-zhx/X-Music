@@ -5,6 +5,7 @@ import { Song } from '@renderer/common/types/music'
 import { message } from 'ant-design-vue'
 import { PropType } from 'vue'
 import { FileNameFormat } from '@renderer/common/enums/common'
+import logService from '@renderer/service/logService'
 
 const props = defineProps({
   song: {
@@ -24,6 +25,10 @@ function download() {
     br: appStore.systemConfig.downloadBr,
   })
   message.success('已添加下载任务')
+  logService.log('song_download', {
+    id: props.song.id,
+    name: props.song.name,
+  })
 }
 
 function getFileName() {

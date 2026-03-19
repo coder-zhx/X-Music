@@ -248,7 +248,8 @@ class PlayService {
     // this._bindListener()
     this.audio.src = url
     this.audio.play().catch(() => {})
-    logService.playSong(songId)
+    logService.log('song_play', { id: song.id, name: song.name })
+    this._syncPlayRecord(songId)
     if (positon > 0) {
       this.audio.currentTime = positon
     }
@@ -256,6 +257,35 @@ class PlayService {
     if (!cachedUrl) {
       this._cacheSong(songId, curBr, url)
     }
+  }
+
+  private _syncPlayRecord(id) {
+    window.electron.ipcRenderer.invoke(
+      'http:post',
+      'https://clientlogusf.music.163.com/weapi/feedback/weblog',
+      window.asrsea({
+        logs: JSON.stringify([
+          {
+            action: 'startplay',
+            json: {
+              id: id,
+              type: 'song',
+              content: '',
+              mainsite: '1',
+              mainsiteWeb: '1',
+            },
+          },
+        ]),
+      }),
+      {
+        headers: {
+          'Nm-GCore-Status': '1',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Referer: 'https://music.163.com/',
+          Cookie: localStorage.getItem('cookie'),
+        },
+      },
+    )
   }
 
   async playSongs(songs: Song[]) {

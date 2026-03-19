@@ -1,31 +1,31 @@
 class LogService {
-  async playSong(id) {
-    await window.electron.ipcRenderer.invoke(
-      'http:post',
-      'https://clientlogusf.music.163.com/weapi/feedback/weblog',
-      window.asrsea({
-        logs: JSON.stringify([
+  log(action: string, data?: Record<string, any>) {
+    const { aplus_queue } = window
+    if (!aplus_queue) return
+
+    let _data = {}
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        _data[`x_${key}`] = data[key]
+      })
+    }
+
+    if (action === 'init') {
+      aplus_queue.push({
+        action: 'aplus.sendPV',
+        arguments: [
           {
-            action: 'startplay',
-            json: {
-              id: id,
-              type: 'song',
-              content: '',
-              mainsite: '1',
-              mainsiteWeb: '1',
-            },
+            is_auto: false,
           },
-        ]),
-      }),
-      {
-        headers: {
-          'Nm-GCore-Status': '1',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Referer: 'https://music.163.com/',
-          Cookie: localStorage.getItem('cookie'),
-        },
-      },
-    )
+          _data,
+        ],
+      })
+    } else {
+      aplus_queue.push({
+        action: 'aplus.record',
+        arguments: [action, 'CLK', _data],
+      })
+    }
   }
 }
 
