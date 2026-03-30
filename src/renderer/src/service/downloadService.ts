@@ -1,4 +1,4 @@
-import { getSongUrl } from '@renderer/common/api'
+import { getLyric, getSongUrl } from '@renderer/common/api'
 import { message } from 'ant-design-vue'
 import { ref, watch } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
@@ -11,6 +11,7 @@ export interface DownloadTask {
   name: string
   extra?: any
   br?: number
+  downloadLyric?: boolean
 }
 
 class Task {
@@ -29,6 +30,7 @@ class Task {
   path?: string
   extra?: any
   br?: number
+  downloadLyric?: boolean
 
   constructor(task: DownloadTask) {
     this.uuid = uuidv4()
@@ -39,6 +41,7 @@ class Task {
     this.status = 'waiting'
     this.extra = task.extra
     this.br = task.br
+    this.downloadLyric = task.downloadLyric
   }
 
   async start() {
@@ -62,6 +65,17 @@ class Task {
   async pause() {
     this.status = 'paused'
     window.electron.ipcRenderer.invoke('downloader:pause', this.uuid)
+  }
+
+  async onSuccess() {
+    if (this.type === 'song' && this.downloadLyric) {
+      const res = await getLyric(this.id)
+      if (!res?.lrc?.lyric) return
+      window.electron.ipcRenderer.invoke('downloader:saveLyricFile', {
+        name: `${this.fileName}.lrc`,
+        data: res.lrc.lyric,
+      })
+    }
   }
 
   private async _getDownloadUrl() {
@@ -109,8 +123,9 @@ class DownloadService {
       if (!task) return
       task.status = 'done'
       task.path = fileInfo.path
+      task.onSuccess()
       this.taskList.value = this.taskList.value.filter((t) => t.uuid !== uuid)
-      this.taskListHistory.value = [...this.taskListHistory.value, task]
+      this.taskListHistory.value = [task, ...this.taskListHistory.value]
     })
     window.electron.ipcRenderer.on('downloader:error', (_event, uuid) => {
       const task = this.taskList.value.find((t) => t.uuid === uuid)

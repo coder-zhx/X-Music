@@ -101,6 +101,7 @@ function download() {
       id: song.id,
       extra: song,
       br: appStore.systemConfig.downloadBr,
+      downloadLyric: appStore.systemConfig.downloadLyric,
     })
   })
   message.success('已添加到下载队列')

@@ -269,6 +269,12 @@ async function showDeskLyric() {
       .lyric-btn:not(.open) {
         color: #adadad !important;
       }
+
+      :deep() {
+        .voice-btn {
+          color: #ffffff !important;
+        }
+      }
     }
 
     .left {

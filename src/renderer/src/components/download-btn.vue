@@ -23,6 +23,7 @@ function download() {
     id: props.song.id,
     extra: props.song,
     br: appStore.systemConfig.downloadBr,
+    downloadLyric: appStore.systemConfig.downloadLyric,
   })
   message.success('已添加下载任务')
   logService.log('song_download', {

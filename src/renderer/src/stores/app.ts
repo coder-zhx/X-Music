@@ -20,6 +20,7 @@ export const useAppStore = defineStore('app', {
       downloadBr: 320,
       maxCache: 1,
       fileNameFormat: 2,
+      downloadLyric: false,
       downloadPath: '',
       deskLyric: true,
       lyricMode: 1,

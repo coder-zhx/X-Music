@@ -100,6 +100,14 @@ export default class Downloader {
         this.pause(uuid)
       })
     })
+
+    // 保存歌词文件
+    ipcMain.handle('downloader:saveLyricFile', async (_event, data) => {
+      const systemConfig: any = store.get('systemConfig')
+      const dirPath = systemConfig?.downloadPath || fileDownloadPath
+      fs.mkdirSync(dirPath, { recursive: true })
+      fs.writeFileSync(path.resolve(dirPath, data.name.replaceAll('/', '／')), data.data)
+    })
   }
 
   pause(uuid) {

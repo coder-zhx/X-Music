@@ -198,6 +198,11 @@ function checkVersion() {
                 </a-radio-group>
               </div>
             </div>
+            <div class="item">
+              <a-checkbox v-model:checked="form.downloadLyric">
+                同时下载歌词文件
+              </a-checkbox>
+            </div>
           </div>
         </div>
         <div class="group">
