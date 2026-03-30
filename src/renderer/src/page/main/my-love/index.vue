@@ -3,9 +3,13 @@ import { computed, ref } from 'vue'
 import userDataService from '@renderer/service/userDataService'
 import useModal from '@renderer/hooks/useModal'
 import CreatePlaylist from '@renderer/components/create-playlist.vue'
-import DownloadTaskList from '@renderer/components/download-task-list.vue'
-import RecentSongList from '@renderer/components/recent-song-list.vue'
+import DownloadTaskList from './download-task-list.vue'
+import RecentSongList from './recent-song-list.vue'
 import { useUserStore } from '@renderer/stores/user'
+
+defineOptions({
+  name: 'MyLove',
+})
 
 const Modal = useModal()
 const userStore = useUserStore()
@@ -181,7 +185,6 @@ function createPlaylist() {
   }
 
   .body {
-    padding-bottom: 40px;
 
     .title {
       font-size: 18px;

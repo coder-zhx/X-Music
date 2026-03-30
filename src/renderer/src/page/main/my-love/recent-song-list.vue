@@ -30,7 +30,7 @@ async function getList() {
         </div>
       </div>
 
-      <Scroller class="body">
+      <Scroller>
         <SongTable :list="list"></SongTable>
       </Scroller>
     </Loading>
