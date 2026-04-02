@@ -27,7 +27,7 @@ const routes = [
         component: () => import('@renderer/page/main/playlist-detail/index.vue'),
       },
       {
-        path: '/my-love',
+        path: '/my-love/:tab?',
         name: 'my-love',
         component: () => import('@renderer/page/main/my-love/index.vue'),
       },

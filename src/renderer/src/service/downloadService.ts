@@ -160,6 +160,9 @@ class DownloadService {
     if (this.taskList.value.some((task) => task.id === taskInfo.id)) return
     const task = new Task(taskInfo)
     this.taskList.value = [...this.taskList.value, task]
+    if (this.paused.value) {
+      task.start()
+    }
   }
 
   removeTask(uuid: string) {

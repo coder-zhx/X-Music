@@ -6,6 +6,7 @@ import CreatePlaylist from '@renderer/components/create-playlist.vue'
 import DownloadTaskList from './download-task-list.vue'
 import RecentSongList from './recent-song-list.vue'
 import { useUserStore } from '@renderer/stores/user'
+import { useRoute } from 'vue-router'
 
 defineOptions({
   name: 'MyLove',
@@ -13,6 +14,7 @@ defineOptions({
 
 const Modal = useModal()
 const userStore = useUserStore()
+const route = useRoute()
 
 const selfPlaylist = computed(() => {
   if (userStore.isLogin) {
@@ -36,7 +38,7 @@ const likeSingerlist = computed(() => {
   }
 })
 
-const curTab = ref('tab1')
+const curTab = ref(route.params.tab || 'my-love')
 
 function createPlaylist() {
   const modal = Modal.create({
@@ -70,11 +72,11 @@ function createPlaylist() {
 <template>
   <div class="page">
     <a-tabs v-model:activeKey="curTab" class="tabs">
-      <a-tab-pane key="tab1" tab="我的收藏"></a-tab-pane>
-      <a-tab-pane key="tab2" tab="我的下载"></a-tab-pane>
-      <a-tab-pane key="tab3" tab="最近播放"></a-tab-pane>
+      <a-tab-pane key="my-love" tab="我的收藏"></a-tab-pane>
+      <a-tab-pane key="my-download" tab="我的下载"></a-tab-pane>
+      <a-tab-pane key="my-play" tab="最近播放"></a-tab-pane>
     </a-tabs>
-    <div class="body" v-if="curTab === 'tab1'">
+    <div class="body" v-if="curTab === 'my-love'">
       <h1 class="title">私人歌单</h1>
       <ul class="playlist">
         <li
@@ -146,10 +148,10 @@ function createPlaylist() {
         </li>
       </ul>
     </div>
-    <div class="body" v-if="curTab === 'tab2'">
+    <div class="body" v-if="curTab === 'my-download'">
       <DownloadTaskList></DownloadTaskList>
     </div>
-    <div class="body" v-if="curTab === 'tab3'">
+    <div class="body" v-if="curTab === 'my-play'">
       <RecentSongList></RecentSongList>
     </div>
   </div>
@@ -185,7 +187,6 @@ function createPlaylist() {
   }
 
   .body {
-
     .title {
       font-size: 18px;
       margin-bottom: 20px;

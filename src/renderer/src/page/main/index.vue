@@ -6,6 +6,7 @@ import { HalfCircleSpinner } from 'epic-spinners'
 import playService from '@renderer/service/playService'
 import { computed, onMounted, ref } from 'vue'
 import pageAlive from '@renderer/components/page-alive.vue'
+import DownloadFloatBtn from '@renderer/components/download-float-btn.vue'
 
 const appStore = useAppStore()
 const userStore = useUserStore()
@@ -70,6 +71,7 @@ onMounted(() => {
     </ul>
     <div class="page-wrap">
       <page-alive></page-alive>
+      <DownloadFloatBtn></DownloadFloatBtn>
     </div>
     <div class="footer" v-if="showFooter">
       <ControlBar></ControlBar>
@@ -116,6 +118,7 @@ onMounted(() => {
 
   .page-wrap {
     height: 100%;
+    position: relative;
   }
 
   .footer {
