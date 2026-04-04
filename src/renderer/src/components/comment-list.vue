@@ -12,7 +12,7 @@ defineProps({
 <template>
   <div v-for="item in list" :key="item.commentId" class="comment-item">
     <div class="user-info">
-      <img class="avatar" :src="item.user.avatarUrl + '?param=50y50'" alt="" />
+      <img class="avatar" :src="$imgSize(item.user.avatarUrl, 50, 50)" alt="" />
       <div>
         <div class="user-name">{{ item.user.nickname }}</div>
         <div class="time">

@@ -191,7 +191,7 @@ function handleEdit() {
         <template #bodyCell="{ column, record }">
           <div v-if="column.key === 'name'" class="name">
             <div class="pic-wrap">
-              <img :src="record.al.picUrl + '?param=40y40'" alt="" />
+              <img :src="$imgSize(record.al.picUrl, 40, 40)" alt="" />
             </div>
             <div class="info">
               <div class="song-name">

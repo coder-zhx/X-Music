@@ -60,7 +60,12 @@ function close() {
     <div class="content">
       <div class="left" v-if="playerMode !== 'hidden'">
         <div class="player simple-mode" v-if="playerMode === 'simple'">
-          <img :src="playState.curSong?.al?.picUrl + '?param=300y300'" alt="" />
+          <img
+            v-if="playState.curSong?.al?.picUrl"
+            :src="$imgSize(playState.curSong?.al?.picUrl!, 300, 300)"
+            alt=""
+          />
+          <img v-else src="@renderer/assets/img/default-cover.png" alt="" />
         </div>
         <div class="player disk-mode" v-if="playerMode === 'disk'">
           <div
@@ -68,7 +73,12 @@ function close() {
             :class="{ pause: !playState.isPlaying }"
             :style="{ '--c': `rgba(${coverColor.join(', ')}, 0.6)` }"
           >
-            <img :src="playState.curSong?.al?.picUrl + '?param=300y300'" alt="" />
+            <img
+              v-if="playState.curSong?.al?.picUrl"
+              :src="$imgSize(playState.curSong?.al?.picUrl!, 300, 300)"
+              alt=""
+            />
+            <img v-else src="@renderer/assets/img/default-cover.png" alt="" />
           </div>
           <div class="needle" :class="{ playing: playState.isPlaying }"></div>
         </div>

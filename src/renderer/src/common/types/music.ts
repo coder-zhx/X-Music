@@ -55,6 +55,22 @@ export interface Song {
   sq: SongQuality
 }
 
+export interface LocalSong {
+  id: string
+  name: string
+  type: string
+  al: {
+    name: string
+    picUrl: string
+  }
+  ar: {
+    name: string
+  }[]
+  dt: number
+  filePath: string
+  lrcFilePath: string
+}
+
 export interface Singer {
   id: number
   name: string

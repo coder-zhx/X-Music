@@ -73,7 +73,7 @@ onUnmounted(() => {
           <img
             v-if="currentComment.user?.avatarUrl"
             class="avatar"
-            :src="currentComment.user.avatarUrl + '?param=50y50'"
+            :src="$imgSize(currentComment.user.avatarUrl, 50, 50)"
           />
           <span class="text">{{ currentComment.content }}</span>
         </div>

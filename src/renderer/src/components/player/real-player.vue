@@ -58,9 +58,17 @@ function draw(data) {
   <div class="real-player" :class="{ playing: playState.isPlaying }">
     <div class="needle"></div>
     <img
+      v-if="playState.curSong?.al?.picUrl"
       class="cover rotate"
       :class="{ pause: !playState.isPlaying }"
-      :src="playState.curSong?.al?.picUrl + '?param=300y300'"
+      :src="$imgSize(playState.curSong?.al?.picUrl!, 300, 300)"
+      alt=""
+    />
+    <img
+      v-else
+      class="cover rotate"
+      :class="{ pause: !playState.isPlaying }"
+      src="@renderer/assets/img/default-cover.png"
       alt=""
     />
     <canvas id="audio-display"></canvas>

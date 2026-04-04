@@ -10,6 +10,7 @@ class LyricService {
     song: null as Song | null,
     lyric: [] as Array<LineLyric>,
     yrcLyric: [] as Array<YrcLyric>,
+    lyricLoading: false,
     currentLineIndex: -1,
     currentLine: '',
     currentTime: 0,
@@ -28,6 +29,7 @@ class LyricService {
           song: toRaw(playService.state.value.curSong),
           lyric: [],
           yrcLyric: [],
+          lyricLoading: false,
           currentLineIndex: -1,
           currentLine: '',
           currentTime: 0,
@@ -64,15 +66,32 @@ class LyricService {
     if (!song) {
       return
     }
-    const res = await getLyric(song.id)
-    if (!res) return
-    const lyric = this._parseLyric(res.lrc?.lyric)
-    const yrcLyric = this._parseYrcLyric(res.yrc?.lyric)
+    this.state.value.lyricLoading = true
+    let lyric = [] as LineLyric[]
+    let yrcLyric = [] as YrcLyric[]
+    if ((song as any).type === 'local') {
+      if ((song as any).lrcFilePath) {
+        const data = await window.electron.ipcRenderer.invoke(
+          'file:readFile',
+          (song as any).lrcFilePath,
+        )
+        if (data) {
+          const decoder = new TextDecoder('utf-8')
+          lyric = this._parseLyric(decoder.decode(data))
+        }
+      }
+    } else {
+      const res = await getLyric(song.id)
+      if (!res) return
+      lyric = this._parseLyric(res.lrc?.lyric)
+      yrcLyric = this._parseYrcLyric(res.yrc?.lyric)
+    }
 
     this.state.value = {
       ...toRaw(this.state.value),
       lyric,
       yrcLyric,
+      lyricLoading: false,
       currentLineIndex: -1,
       currentLine: '',
       currentTime: 0,

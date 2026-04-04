@@ -6,6 +6,7 @@ import { message } from 'ant-design-vue'
 import broadcastService from './broadcastService'
 import { getExtFromUrl } from '@renderer/common/utils/common'
 import logService from './logService'
+import defaultCover from '@renderer/assets/img/default-cover.png?inline'
 
 const LOOPMODES = ['LISTLOOP', 'SINGLELOOP', 'RANDOM']
 class PlayService {
@@ -166,7 +167,9 @@ class PlayService {
             title: song.name,
             artist: song.ar?.[0]?.name || '未知艺术家',
             album: song.al?.name || '未知专辑',
-            artwork: [{ src: song.al?.picUrl, sizes: '512x512', type: 'image/jpg' }],
+            artwork: [
+              { src: song.al?.picUrl || defaultCover, sizes: '512x512', type: 'image/jpg' },
+            ],
           })
         }
       },
@@ -220,13 +223,19 @@ class PlayService {
     this.state.value.curSong = song
 
     let url = ''
-    const cachedUrl = await this._getCachedSongUrl(songId, curBr)
-    if (cachedUrl) {
-      url = 'file://' + cachedUrl
+    let cachedUrl = ''
+    if (song.type === 'local') {
+      url = 'file://' + song.filePath
     } else {
-      const res = await getSongUrl(songId, curBr)
-      url = res?.url || res?.data?.[0]?.url
+      cachedUrl = await this._getCachedSongUrl(songId, curBr)
+      if (cachedUrl) {
+        url = 'file://' + cachedUrl
+      } else {
+        const res = await getSongUrl(songId, curBr)
+        url = res?.url || res?.data?.[0]?.url
+      }
     }
+
     if (songId !== this.state.value.curSong!.id) {
       return
     }
@@ -253,13 +262,14 @@ class PlayService {
     this.audio.src = url
     this.audio.play().catch(() => {})
     logService.log('song_play', { id: song.id, name: song.name })
-    this._syncPlayRecord(songId)
     if (positon > 0) {
       this.audio.currentTime = positon
     }
-
-    if (!cachedUrl) {
-      this._cacheSong(songId, curBr, url)
+    if (song.type !== 'local') {
+      this._syncPlayRecord(songId)
+      if (!cachedUrl) {
+        this._cacheSong(songId, curBr, url)
+      }
     }
   }
 

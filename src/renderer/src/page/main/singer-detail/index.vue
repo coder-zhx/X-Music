@@ -93,7 +93,7 @@ onUnmounted(() => {
       <Scroller v-if="detail" class="body">
         <div class="top">
           <div class="left">
-            <img id="cover" class="cover" :src="detail.cover + '?param=300y300'" />
+            <img id="cover" class="cover" :src="$imgSize(detail.cover!, 300, 300)" />
           </div>
           <div class="right">
             <div class="name">{{ detail.name }}</div>

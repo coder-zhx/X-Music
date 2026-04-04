@@ -61,7 +61,7 @@ async function refresh() {
         <div class="img-wrapper">
           <img class="disk" src="@renderer/assets/img/disk.png" alt="" />
           <div class="cover-wrapper">
-            <img class="cover" :src="item.picUrl + '?param=400y400'" alt="" />
+            <img class="cover" :src="$imgSize(item.picUrl, 400, 400)" alt="" />
             <span class="playcount">
               <Iconfont name="icon-erji"></Iconfont>
               {{ $number2wan(item.playCount) }}
@@ -83,7 +83,7 @@ async function refresh() {
         @click="$router.push(`/singer/${item.id}`)"
       >
         <div class="img-wrapper">
-          <img :src="item.picUrl + '?param=400y400'" alt="" />
+          <img :src="$imgSize(item.picUrl!, 400, 400)" alt="" />
         </div>
         <a>{{ item.name }}</a>
       </li>
@@ -100,7 +100,7 @@ async function refresh() {
         @click="$router.push(`/playlist/${item.id}`)"
       >
         <div class="img-wrapper">
-          <img :src="item.coverImgUrl + '?param=400y400'" alt="" />
+          <img :src="$imgSize(item.coverImgUrl, 400, 400)" alt="" />
         </div>
         <div class="info">
           <div class="flex-y-center space-between">

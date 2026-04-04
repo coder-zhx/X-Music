@@ -117,7 +117,7 @@ async function getMultimatch() {
                 class="item artist"
                 @click="$router.push(`/singer/${item.id}`)"
               >
-                <img class="cover" :src="item.cover + '?param=200y200'" alt="" />
+                <img class="cover" :src="$imgSize(item.cover, 200, 200)" alt="" />
                 <div class="info">
                   <div class="name">{{ item.name }}</div>
                   <div class="other">

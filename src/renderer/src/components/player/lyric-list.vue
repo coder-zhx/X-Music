@@ -58,7 +58,7 @@ function scrollToCurLine(behavior: ScrollBehavior = 'smooth') {
 </script>
 
 <template>
-  <div class="lyric">
+  <div class="lyric" v-if="lyricList.length">
     <div
       v-for="(line, index) in lyricList"
       :key="index"
@@ -70,6 +70,9 @@ function scrollToCurLine(behavior: ScrollBehavior = 'smooth') {
         {{ line.text }}
       </span>
     </div>
+  </div>
+  <div v-else class="no-data">
+    <span v-if="!lyricState.lyricLoading">暂无歌词</span>
   </div>
 </template>
 
@@ -107,6 +110,14 @@ function scrollToCurLine(behavior: ScrollBehavior = 'smooth') {
     font-size: 24px;
     color: #ffffff;
   }
+}
+.no-data {
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #ffffff99;
 }
 
 @media screen and (min-width: 1200px) {

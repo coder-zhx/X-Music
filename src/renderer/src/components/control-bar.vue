@@ -13,6 +13,7 @@ import broadcastService from '@renderer/service/broadcastService'
 import { useAppStore } from '@renderer/stores/app'
 import { SongBrOptions } from '@renderer/common/consts/common'
 import { adjustColorBrightness, getImgColors } from '@renderer/common/utils/color'
+import defaultCover from '@renderer/assets/img/default-cover.png?inline'
 
 const appStore = useAppStore()
 
@@ -80,6 +81,9 @@ watch(
       const imgUrl = playState.value.curSong?.al?.picUrl
       if (imgUrl) {
         const colors = await getImgColors(imgUrl + '?param=300y300')
+        coverColor.value = colors ? adjustColorBrightness(colors[0], -0.6) : [75, 75, 75]
+      } else {
+        const colors = await getImgColors(defaultCover)
         coverColor.value = colors ? adjustColorBrightness(colors[0], -0.6) : [75, 75, 75]
       }
     }
@@ -149,11 +153,14 @@ async function showDeskLyric() {
             :class="{ pause: !playState.isPlaying }"
             @click="playerVisible = !playerVisible"
           >
-            <img
-              v-if="playState.curSong"
-              :src="playState.curSong?.al?.picUrl + '?param=300y300'"
-              alt=""
-            />
+            <template v-if="playState.curSong">
+              <img
+                v-if="playState.curSong?.al?.picUrl"
+                :src="$imgSize(playState.curSong?.al?.picUrl, 300, 300)"
+                alt=""
+              />
+              <img v-else src="@renderer/assets/img/default-cover.png" alt="" />
+            </template>
           </div>
           <div v-if="playState.curSong" class="song-info">
             <div class="song ellipsis">

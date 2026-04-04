@@ -226,6 +226,9 @@
   .ant-checkbox-checked:not(.ant-checkbox-disabled):after {
   border-color: $primary !important;
 }
+.ant-checkbox-indeterminate .ant-checkbox-inner:after {
+  background-color: $primary !important;
+}
 
 .ant-radio-wrapper {
   color: $text;

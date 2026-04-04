@@ -56,6 +56,11 @@ onMounted(() => {
           <Iconfont name="icon-heart-fill"></Iconfont>
         </router-link>
       </li>
+      <li>
+        <router-link to="/local-music">
+          <Iconfont name="icon-music-dir"></Iconfont>
+        </router-link>
+      </li>
     </ul>
     <ul class="nav bottom-nav" :style="{ bottom: showFooter ? '135px' : '35px' }">
       <li>
@@ -95,7 +100,7 @@ onMounted(() => {
   .nav {
     position: fixed;
     left: 35px;
-    top: 30%;
+    top: 25%;
     display: flex;
     flex-direction: column;
     gap: 20px;

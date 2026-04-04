@@ -64,9 +64,6 @@ function switchSort() {
 <template>
   <div class="page">
     <h1 class="page-title">
-      <a @click="$router.back()">
-        <Iconfont name="icon-rollback"></Iconfont>
-      </a>
       MV列表
       <span class="line"></span>
       <a-popover

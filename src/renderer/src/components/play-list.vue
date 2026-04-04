@@ -95,11 +95,17 @@ function scrollToCurSong() {
                   ></PlayingIcon>
                   <span v-else class="num">{{ i + 1 }}</span>
                 </div>
-                <a-image
+                <img
+                  v-if="item.al?.picUrl"
                   class="cover"
-                  :src="item.al.picUrl + '?param=40y40'"
+                  :src="$imgSize(item.al?.picUrl, 40, 40)"
                   :width="40"
-                  :preview="false"
+                />
+                <img
+                  v-else
+                  class="cover"
+                  src="@renderer/assets/img/default-cover.png"
+                  :width="40"
                 />
                 <div class="song-info">
                   <div class="name ellipsis">

@@ -113,7 +113,7 @@ async function getData(reset = false) {
         <ul class="singer-list">
           <li v-for="item in singerList" :key="item.id" @click="$router.push(`/singer/${item.id}`)">
             <div class="img-wrapper">
-              <img :src="item.picUrl + '?param=400y400'" alt="" />
+              <img :src="$imgSize(item.picUrl!, 400, 400)" alt="" />
             </div>
             <a>{{ item.name }}</a>
           </li>

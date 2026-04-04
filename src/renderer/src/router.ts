@@ -32,6 +32,11 @@ const routes = [
         component: () => import('@renderer/page/main/my-love/index.vue'),
       },
       {
+        path: '/local-music',
+        name: 'local-music',
+        component: () => import('@renderer/page/main/local-music/index.vue'),
+      },
+      {
         path: '/setting',
         name: 'setting',
         component: () => import('@renderer/page/main/setting/index.vue'),

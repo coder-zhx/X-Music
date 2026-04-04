@@ -2,6 +2,7 @@ import { app, ipcMain, dialog } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import Store from 'electron-store'
+import { parseFile } from 'music-metadata'
 
 const store = new Store()
 
@@ -93,6 +94,50 @@ ipcMain.handle('file:deleteUserData', async (_event, data) => {
   try {
     fs.unlinkSync(path.resolve(dirPath, data.name))
   } catch (_error) {}
+})
+
+// 根据正则表达式获取指定目录下的某些文件
+ipcMain.handle('file:findFiles', async (_event, data) => {
+  const { path: filePath, regString } = data
+  const list: any[] = []
+  const handle = (currentPath) => {
+    const stats = fs.statSync(currentPath)
+    if (stats.isFile() && new RegExp(regString).test(currentPath)) {
+      list.push({
+        name: path.parse(currentPath).name,
+        ext: path.parse(currentPath).ext,
+        path: currentPath,
+      })
+    } else if (stats.isDirectory()) {
+      const files = fs.readdirSync(currentPath)
+      files.forEach((file) => {
+        handle(path.join(currentPath, file))
+      })
+    }
+  }
+  handle(filePath)
+  return list
+})
+
+// 读取mp3元数据
+ipcMain.handle('file:getMp3Metadata', async (_event, filePath) => {
+  try {
+    const metadata = await parseFile(filePath)
+    return metadata
+  } catch (error) {
+    console.log(error)
+  }
+  return
+})
+
+// 读取指定文件数据
+ipcMain.handle('file:readFile', async (_event, filePath) => {
+  try {
+    return await fs.promises.readFile(filePath)
+  } catch (error) {
+    console.log(error)
+  }
+  return
 })
 
 /**

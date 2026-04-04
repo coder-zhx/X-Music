@@ -1,4 +1,4 @@
-import { PlaylistDetail, Singer, Song } from '@renderer/common/types/music'
+import { LocalSong, PlaylistDetail, Singer, Song } from '@renderer/common/types/music'
 import { ref, watch } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import cover1 from '@renderer/assets/img/cover_01.png?inline'
@@ -35,6 +35,8 @@ class UserDataService {
       cover: '',
     },
   ])
+  // 本地歌曲
+  localSongs = ref<LocalSong[]>([])
 
   constructor() {
     this._init()
@@ -94,6 +96,22 @@ class UserDataService {
         } catch (_error) {}
       })
 
+    // 读取本地歌曲列表
+    window.electron.ipcRenderer
+      .invoke('file:readUserData', {
+        name: `localSongs.json`,
+        subPath: 'local',
+      })
+      .then((res) => {
+        try {
+          if (!res) return
+          const arr = JSON.parse(res)
+          if (Array.isArray(arr)) {
+            this.localSongs.value = arr
+          }
+        } catch (_error) {}
+      })
+
     // 监听我喜欢的歌单，同步到本地文件
     watch(
       () => this.lovePlaylists.value,
@@ -126,6 +144,18 @@ class UserDataService {
           name: `customPlaylists.json`,
           subPath: 'love',
           data: JSON.stringify(this.customPlaylists.value),
+        })
+      },
+    )
+
+    // 监听本地歌曲列表，同步到本地文件
+    watch(
+      () => this.localSongs.value,
+      () => {
+        window.electron.ipcRenderer.invoke('file:writeUserData', {
+          name: `localSongs.json`,
+          subPath: 'local',
+          data: JSON.stringify(this.localSongs.value),
         })
       },
     )
@@ -319,6 +349,21 @@ class UserDataService {
    */
   unlovePlaylist(playlist: PlaylistDetail) {
     this.lovePlaylists.value = this.lovePlaylists.value.filter((item) => item.id !== playlist.id)
+  }
+
+  /**
+   * 添加歌曲到本地歌曲列表
+   */
+  addToLocalSongs(songs: LocalSong[]) {
+    const list = songs.filter((t) => !this.localSongs.value.some((s) => s.filePath === t.filePath))
+    this.localSongs.value = [...this.localSongs.value, ...list]
+  }
+
+  /**
+   * 从本地歌曲列表移除歌曲
+   */
+  removeFromLocalSongs(songs: LocalSong[]) {
+    this.localSongs.value = this.localSongs.value.filter((s) => !songs.some((t) => t.id === s.id))
   }
 }
 

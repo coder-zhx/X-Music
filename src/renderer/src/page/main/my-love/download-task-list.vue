@@ -100,7 +100,7 @@ function openDir(record) {
         <template #bodyCell="{ column, record }">
           <div :key="record.uuid">
             <div v-if="column.key === 'name'" class="name">
-              <img class="cover" :src="record.extra?.al.picUrl + '?param=40y40'" alt="" />
+              <img class="cover" :src="$imgSize(record.extra?.al.picUrl, 40, 40)" alt="" />
               <div class="info">
                 <div class="song-name">{{ record.extra?.name }}</div>
                 <div class="artist">
@@ -115,7 +115,11 @@ function openDir(record) {
               {{ $byteFormat(record.progressInfo?.total) || '--' }}
             </div>
             <div v-if="column.key === 'progress'" class="progress">
-              <a-progress :percent="record.progressInfo?.progress" :show-info="false" />
+              <a-progress
+                :percent="record.progressInfo?.progress"
+                :show-info="false"
+                strokeColor="#e61723"
+              />
             </div>
             <div v-if="column.key === 'op'" class="op">
               <a-tooltip title="暂停下载" v-if="record.status === 'downloading'">
@@ -149,7 +153,7 @@ function openDir(record) {
         <template #bodyCell="{ column, record }">
           <div :key="record.uuid">
             <div v-if="column.key === 'name'" class="name">
-              <img class="cover" :src="record.extra?.al.picUrl + '?param=40y40'" alt="" />
+              <img class="cover" :src="$imgSize(record.extra?.al.picUrl, 40, 40)" alt="" />
               <div class="info">
                 <div class="song-name">{{ record.extra?.name }}</div>
                 <div class="artist">

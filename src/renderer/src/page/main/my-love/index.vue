@@ -85,7 +85,7 @@ function createPlaylist() {
           @click="$router.push(`/${userStore.isLogin ? 'playlist' : 'custom-playlist'}/${item.id}`)"
         >
           <template v-if="item.id === 'my-love-songs'">
-            <img v-if="item.cover" class="cover" :src="item.cover + '?param=200y200'" alt="" />
+            <img v-if="item.cover" class="cover" :src="$imgSize(item.cover, 200, 200)" alt="" />
             <div class="my-love" v-else>
               <Iconfont name="icon-love-fill"></Iconfont>
             </div>
@@ -94,7 +94,7 @@ function createPlaylist() {
             <img
               v-if="item.cover?.startsWith('http')"
               class="cover"
-              :src="item.cover + '?param=200y200'"
+              :src="$imgSize(item.cover, 200, 200)"
               alt=""
             />
             <img v-else class="cover" :src="item.cover" alt="" />
@@ -117,7 +117,7 @@ function createPlaylist() {
           :key="item.id"
           @click="$router.push(`/playlist/${item.id}`)"
         >
-          <img class="cover" :src="item.coverImgUrl + '?param=400y400'" alt="" />
+          <img class="cover" :src="$imgSize(item.coverImgUrl, 400, 400)" alt="" />
           <a>{{ item.name }}</a>
         </li>
         <li>
@@ -136,7 +136,7 @@ function createPlaylist() {
           :key="item.id"
           @click="$router.push(`/singer/${item.id}`)"
         >
-          <img class="cover" :src="item.cover + '?param=400y400'" alt="" />
+          <img class="cover" :src="$imgSize(item.cover, 400, 400)" alt="" />
           <a>{{ item.name }}</a>
         </li>
         <li>
