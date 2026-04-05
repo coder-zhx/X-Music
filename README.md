@@ -18,14 +18,17 @@
 ✅ 沉浸式播放界面  
 ✅ 桌面歌词 卡拉OK歌词（逐字歌词）  
 ✅ 账号登录  
-🚫 本地音乐
+✅ 本地音乐
 
 ## 运行截图
 
 ![首页白](./docs/screens/home1.png)
 ![首页黑](./docs/screens/home2.png)
-![歌单](./docs/screens/songlist.png)  
 ![播放器](./docs/screens/player.png)
+![歌单](./docs/screens/playlist.png)  
+![MV](./docs/screens/mv.png)  
+![收藏](./docs/screens/love.png)  
+![本地音乐](./docs/screens/local.png)
 
 ## 开发
 

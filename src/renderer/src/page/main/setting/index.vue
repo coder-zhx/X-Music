@@ -199,9 +199,7 @@ function checkVersion() {
               </div>
             </div>
             <div class="item">
-              <a-checkbox v-model:checked="form.downloadLyric">
-                同时下载歌词文件
-              </a-checkbox>
+              <a-checkbox v-model:checked="form.downloadLyric"> 同时下载歌词文件 </a-checkbox>
             </div>
           </div>
         </div>
@@ -268,7 +266,7 @@ function checkVersion() {
             <div class="item">
               <div class="item-title">版本:</div>
               <div class="item-content">
-                v1.4.1 <a-button @click="checkVersion">检查更新</a-button>
+                v1.5.0 <a-button @click="checkVersion">检查更新</a-button>
               </div>
             </div>
             <div class="item">
