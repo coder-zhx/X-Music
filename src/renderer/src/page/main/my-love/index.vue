@@ -82,7 +82,7 @@ function createPlaylist() {
         <li
           v-for="item in selfPlaylist"
           :key="item.id"
-          @click="$router.push(`/${userStore.isLogin ? 'playlist' : 'custom-playlist'}/${item.id}`)"
+          @click="$router.push(`/custom-playlist/${item.id}`)"
         >
           <template v-if="item.id === 'my-love-songs'">
             <img v-if="item.cover" class="cover" :src="$imgSize(item.cover, 200, 200)" alt="" />

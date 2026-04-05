@@ -7,7 +7,8 @@ import { Song } from '@renderer/common/types/music'
 import { cloneDeep } from 'lodash-es'
 import useModal from '@renderer/hooks/useModal'
 import CreatePlaylist from '@renderer/components/create-playlist.vue'
-import { deletePlaylist, getPlaylistDetail } from '@renderer/common/api'
+import { deletePlaylist, getPlaylistDetail, operatePlaylist } from '@renderer/common/api'
+import { useUserStore } from '@renderer/stores/user'
 import { message } from 'ant-design-vue'
 
 defineOptions({
@@ -17,6 +18,7 @@ defineOptions({
 const route = useRoute()
 const router = useRouter()
 const Modal = useModal()
+const userStore = useUserStore()
 const playlistId = route.params.id as string
 
 const playlist = ref()
@@ -77,14 +79,26 @@ async function getData() {
     playlist.value = cloneDeep(
       userDataService.customPlaylists.value.find((playlist) => playlist.id === playlistId),
     )
-    console.log(playlist.value)
     list.value = await userDataService.getCustomPlaylistSongs(playlistId)
   }
 }
 
-function deleteRow(song: Song) {
-  list.value = list.value.filter((item) => item.id !== song.id)
-  userDataService.removeFromCustomPlaylist(playlistId, song)
+async function deleteRow(song: Song) {
+  if (playlistId && !isNaN(Number(playlistId))) {
+    const res = await operatePlaylist({
+      op: 'del',
+      pid: playlistId,
+      tracks: song!.id,
+    })
+    if (res.status === 200) {
+      getData()
+    } else {
+      message.error('删除失败')
+    }
+  } else {
+    list.value = list.value.filter((item) => item.id !== song.id)
+    userDataService.removeFromCustomPlaylist(playlistId, song)
+  }
 }
 
 function handleDelete() {
@@ -106,14 +120,17 @@ function handleDelete() {
         onClick: async () => {
           if (playlistId && !isNaN(Number(playlistId))) {
             const res = await deletePlaylist({ id: playlistId })
-            if (res.code !== 200) {
+            if (res.code === 200) {
+              userStore.getUserPlaylist()
+              router.back()
+            } else {
               message.error('删除歌单失败')
             }
           } else {
             userDataService.deleteCustomPlaylist(playlistId)
+            router.back()
           }
           modal.close()
-          router.back()
         },
       },
     ],
@@ -143,6 +160,8 @@ function handleEdit() {
           try {
             await instance.onOk()
             modal.close()
+            getData()
+            userStore.getUserPlaylist()
           } catch (_error) {}
         },
       },

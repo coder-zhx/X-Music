@@ -7,6 +7,7 @@ import playService from '@renderer/service/playService'
 import userDataService from '@renderer/service/userDataService'
 import { v4 as uuidv4 } from 'uuid'
 
+const playState = playService.state
 const Modal = useModal()
 
 const localSongs = computed(() => {
@@ -190,6 +191,10 @@ const customRow = (record) => {
         <template #bodyCell="{ column, record }">
           <div v-if="column.key === 'name'" class="name">
             {{ record.name }}
+            <PlayingIcon
+              v-if="record.id === playState.curSong?.id"
+              :is-playing="playState.isPlaying"
+            ></PlayingIcon>
           </div>
           <template v-if="column.key === 'ar'">{{ record.ar[0]?.name || '--' }}</template>
           <template v-if="column.key === 'dt'">{{ $duration(record.dt) || '--' }}</template>
@@ -211,6 +216,12 @@ const customRow = (record) => {
   gap: 10px;
   padding-right: 40px;
   padding-bottom: 20px;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .no-data {
