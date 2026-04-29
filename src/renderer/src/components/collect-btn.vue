@@ -29,6 +29,10 @@ const playlist = computed(() => {
 }) as any
 
 const handleClick = async (item) => {
+  if ((props.song as any).type === 'local') {
+    message.error('不支持本地歌曲')
+    return
+  }
   if (userStore.isLogin) {
     const res = await operatePlaylist({
       op: 'add',

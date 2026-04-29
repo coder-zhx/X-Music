@@ -27,6 +27,10 @@ const isLove = computed(() => {
 
 async function toggle() {
   if (!props.song) return
+  if ((props.song as any).type === 'local') {
+    message.error('不支持本地歌曲')
+    return
+  }
   if (userStore.isLogin) {
     likeSong({
       id: props.song.id,

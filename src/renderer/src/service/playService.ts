@@ -89,6 +89,9 @@ class PlayService {
         this.playNext()
       }
     })
+    this.audio.addEventListener('error', () => {
+      this._handlePlayError()
+    })
     broadcastService.onmessage((event) => {
       if (event.data.type === 'event:playPrev') {
         this.playPrev()
@@ -208,7 +211,8 @@ class PlayService {
     this.audio.pause()
     this.audio.currentTime = 0
     if (this.audio.src) {
-      this.audio.src = ''
+      this.audio.removeAttribute('src')
+      this.audio.load()
     }
     this.state.value.currentTime = 0
     this.state.value.isPlaying = false
@@ -240,21 +244,7 @@ class PlayService {
       return
     }
     if (!url) {
-      const index = this.songList.value.findIndex(
-        (item) => item.id === this.state.value.curSong?.id,
-      )
-      if (
-        isInPlayList &&
-        this.songList.value.length > 1 &&
-        index < this.songList.value.length - 1
-      ) {
-        message.error('未找到资源，自动播放下一首')
-        this._autoNextTimer = setTimeout(() => {
-          this.playNext()
-        }, 1000)
-      } else {
-        message.error('未找到资源，试试其它歌曲吧')
-      }
+      this._handlePlayError()
       return
     }
     // this.audio = new Audio()
@@ -270,6 +260,21 @@ class PlayService {
       if (!cachedUrl) {
         this._cacheSong(songId, curBr, url)
       }
+    }
+  }
+
+  private _handlePlayError() {
+    const isInPlayList = !!this.songList.value.find(
+      (item) => item.id === this.state.value.curSong!.id,
+    )
+    const index = this.songList.value.findIndex((item) => item.id === this.state.value.curSong?.id)
+    if (isInPlayList && this.songList.value.length > 1 && index < this.songList.value.length - 1) {
+      message.error('未找到资源，自动播放下一首')
+      this._autoNextTimer = setTimeout(() => {
+        this.playNext()
+      }, 1000)
+    } else {
+      message.error('未找到资源，试试其它歌曲吧')
     }
   }
 
