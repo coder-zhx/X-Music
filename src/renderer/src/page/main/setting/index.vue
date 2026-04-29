@@ -105,8 +105,8 @@ function onLogout() {
   })
 }
 
-function checkVersion() {
-  window.open('https://github.com/coder-zhx/X-Music/releases')
+function openWeb(link) {
+  window.open(link)
 }
 </script>
 
@@ -265,9 +265,7 @@ function checkVersion() {
           <div class="group-content about-info">
             <div class="item">
               <div class="item-title">版本:</div>
-              <div class="item-content">
-                v1.5.0 <a-button @click="checkVersion">检查更新</a-button>
-              </div>
+              <div class="item-content">v1.5.1</div>
             </div>
             <div class="item">
               <div class="item-title">作者:</div>
@@ -280,6 +278,22 @@ function checkVersion() {
                   github
                   <img style="height: 16px" src="@renderer/assets/img/github.png" alt="" />
                 </a>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-title">新版本下载:</div>
+              <div class="item-content">
+                <a-button
+                  @click="openWeb('https://pan.quark.cn/s/072af8782c97?entry=webother#/list/share')"
+                >
+                  夸克网盘
+                </a-button>
+                <a-button
+                  @click="openWeb('https://github.com/coder-zhx/X-Music/releases')"
+                  style="margin-left: 10px"
+                >
+                  github
+                </a-button>
               </div>
             </div>
           </div>
