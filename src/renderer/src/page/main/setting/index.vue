@@ -265,7 +265,7 @@ function openWeb(link) {
           <div class="group-content about-info">
             <div class="item">
               <div class="item-title">版本:</div>
-              <div class="item-content">v1.5.1</div>
+              <div class="item-content">v1.5.2</div>
             </div>
             <div class="item">
               <div class="item-title">作者:</div>

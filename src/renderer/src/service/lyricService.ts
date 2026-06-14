@@ -145,7 +145,7 @@ class LyricService {
       const time = parseInt(timeMatch[1])
       const duration = parseInt(timeMatch[2])
 
-      const wordPattern = /\((\d+),(\d+),\d+\)(.)/g
+      const wordPattern = /\((\d+),(\d+),\d+\)([^(]+)/g
       const words: any[] = []
       let match
       while ((match = wordPattern.exec(line)) !== null) {
