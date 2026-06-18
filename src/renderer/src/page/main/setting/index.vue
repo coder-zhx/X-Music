@@ -121,8 +121,7 @@ function openWeb(link) {
           <div class="group-content">
             <div class="item">
               <a-button type="primary" @click="onLogin" v-if="!userStore.isLogin">
-                <Iconfont name="icon-scan"></Iconfont>
-                扫码登录
+                网易云账号登录
               </a-button>
               <div class="account" v-if="userStore.isLogin">
                 <img class="avatar" :src="userStore.profile?.avatarUrl" />
@@ -265,7 +264,7 @@ function openWeb(link) {
           <div class="group-content about-info">
             <div class="item">
               <div class="item-title">版本:</div>
-              <div class="item-content">v1.5.3</div>
+              <div class="item-content">v1.5.4</div>
             </div>
             <div class="item">
               <div class="item-title">作者:</div>

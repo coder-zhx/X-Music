@@ -10,6 +10,7 @@
 .ant-btn-primary {
   color: #fff;
   background-color: $primary;
+  border: none !important;
 
   &:not([disabled]):hover {
     background-color: $primary-light !important;
@@ -142,10 +143,30 @@
   .ant-select-item {
     color: $text;
   }
+
+  .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    background-color: $btn-hover !important;
+    color: $text !important;
+  }
 }
 
-.ant-select .ant-select-clear {
-  background: none !important;
+.ant-select {
+  .ant-select-selector {
+    background: $bg-input !important;
+    color: $text !important;
+    box-shadow: none !important;
+  }
+  .ant-select-clear {
+    background: none !important;
+  }
+  .ant-select-arrow {
+    color: $text-light !important;
+  }
+  &.ant-select-open {
+    .ant-select-selection-item {
+      color: $text !important;
+    }
+  }
 }
 
 .ant-modal {

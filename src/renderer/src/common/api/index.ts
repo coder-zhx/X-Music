@@ -390,6 +390,24 @@ export async function loginCheck(): Promise<Res> {
 }
 
 /**
+ * 发送手机验证码
+ */
+export async function sendCaptcha(phone: string): Promise<Res> {
+  return await http.get(`/captcha/sent`, {
+    params: { phone, timestamp: Date.now() },
+  })
+}
+
+/**
+ * 手机验证码登录
+ */
+export async function loginByPhone(params): Promise<Res> {
+  return await http.get(`/login/cellphone`, {
+    params: { ...params, timestamp: Date.now() },
+  })
+}
+
+/**
  * 退出登录
  */
 export async function logout(): Promise<Res> {
