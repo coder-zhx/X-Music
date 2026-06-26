@@ -17,7 +17,7 @@ const emit = defineEmits(['close'])
 
 const userStore = useUserStore()
 
-const curTab = ref('phoneLogin')
+const curTab = ref('websiteLogin')
 const form = ref({
   phone: '',
   ctcode: '86',
@@ -150,6 +150,10 @@ async function onLoginSuccess(cookie: string) {
   })
 }
 
+function websiteLogin() {
+  location.href = 'https://music.163.com/#/login'
+}
+
 function close() {
   emit('close')
 }
@@ -159,9 +163,16 @@ function close() {
   <div class="login-modal">
     <div class="title">网易云账号登录</div>
     <a-tabs v-model:activeKey="curTab" class="tabs">
+      <a-tab-pane key="websiteLogin" tab="官网登录 (推荐)"></a-tab-pane>
       <a-tab-pane key="phoneLogin" tab="手机登录"></a-tab-pane>
       <a-tab-pane key="qrcodeLogin" tab="二维码登录"></a-tab-pane>
     </a-tabs>
+    <template v-if="curTab === 'websiteLogin'">
+      <div class="website-box">
+        <div class="tips">跳转网易云音乐官网登录，登录成功后会自动获取到Cookie</div>
+        <a-button @click="websiteLogin" block type="primary" size="large">去登录</a-button>
+      </div>
+    </template>
     <template v-if="curTab === 'phoneLogin'">
       <div class="phone-box">
         <div class="phone-input-group">
@@ -235,6 +246,15 @@ function close() {
       .ant-tabs-nav::before {
         border-bottom: none;
       }
+    }
+  }
+
+  .website-box {
+    padding: 20px 20px 0 20px;
+
+    .tips {
+      font-size: 16px;
+      margin-bottom: 32px;
     }
   }
 

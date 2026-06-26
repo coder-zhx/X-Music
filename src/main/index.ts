@@ -7,6 +7,7 @@ import {
   Menu,
   nativeImage,
   globalShortcut,
+  session,
 } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -120,6 +121,30 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  // 从网易云获取cookie数据
+  mainWindow.webContents.on('did-navigate', async (_event, url) => {
+    if (url.startsWith('https://music.163.com')) {
+      await session.defaultSession.cookies.remove('https://music.163.com', 'MUSIC_U')
+
+      const handler = async (_event, cookie, _cause, removed) => {
+        if (cookie.domain?.includes('music.163.com') && cookie.name === 'MUSIC_U' && !removed) {
+          const cookies = await session.defaultSession.cookies.get({ domain: 'music.163.com' })
+          const cookieStr = cookies.map((c) => `${c.name}=${c.value}`).join('; ')
+          mainWindow.webContents.navigationHistory.goToIndex(0)
+
+          mainWindow.webContents.once('did-finish-load', () => {
+            mainWindow.webContents.executeJavaScript(
+              `localStorage.setItem('cookie', ${JSON.stringify(cookieStr)}); window.location.reload();`,
+            )
+          })
+          session.defaultSession.cookies.off('changed', handler)
+        }
+      }
+
+      session.defaultSession.cookies.on('changed', handler)
+    }
+  })
 }
 
 let tray: Tray
