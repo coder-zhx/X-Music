@@ -1,6 +1,6 @@
 {
   "name": "x-music",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "X Music",
   "main": "./out/main/index.js",
   "author": "coder_zhx",
