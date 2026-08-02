@@ -10,9 +10,12 @@ import appService from '@renderer/service/appService'
 import { onMounted, watch } from 'vue'
 import { subscribeError } from './common/utils/http'
 import logService from './service/logService'
+import useModal from '@renderer/hooks/useModal'
 
 const appStore = useAppStore()
 const userStore = useUserStore()
+
+const Modal = useModal()
 
 playService.appStore = appStore
 lyricService.appStore = appStore
@@ -23,6 +26,11 @@ subscribeError((error) => {
   switch (error.status) {
     case 301:
       userStore.isLogin = false
+      break
+    case 401:
+      if (error.config.url.includes('https://music.gdstudio.org/api.php')) {
+        showPlayErrorModal()
+      }
       break
   }
 })
@@ -58,6 +66,44 @@ async function init() {
     await lyricService.showLyricWindow(true)
   }
   lyricService.init()
+}
+
+function showPlayErrorModal() {
+  const modal = Modal.create({
+    title: '播放错误',
+    content:
+      '无法获取音乐资源，请等待软件修复，您可检查是否有版本更新，或者在github上提issue反馈问题',
+    footer: [
+      {
+        text: '取消',
+        type: 'default',
+        onClick: () => {
+          modal.close()
+        },
+      },
+      {
+        text: '去反馈',
+        type: 'default',
+        onClick: () => {
+          window.open('https://github.com/coder-zhx/X-Music')
+        },
+      },
+      {
+        text: '查看github',
+        type: 'default',
+        onClick: () => {
+          window.open('https://github.com/coder-zhx/X-Music/releases')
+        },
+      },
+      {
+        text: '查看网盘',
+        type: 'default',
+        onClick: () => {
+          window.open('https://pan.quark.cn/s/072af8782c97?entry=webother#/list/share')
+        },
+      },
+    ],
+  })
 }
 
 onMounted(() => {

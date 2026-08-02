@@ -50,7 +50,7 @@ http.interceptors.response.use(
     if (errorHandler) {
       errorHandler(error)
     }
-    return error.response.data
+    throw error
   },
 )
 

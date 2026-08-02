@@ -235,8 +235,15 @@ class PlayService {
       if (cachedUrl) {
         url = 'file://' + cachedUrl
       } else {
-        const res = await getSongUrl(songId, curBr)
-        url = res?.url || res?.data?.[0]?.url
+        try {
+          const res = await getSongUrl(songId, curBr)
+          url = res?.url || res?.data?.[0]?.url
+        } catch (e: any) {
+          if (e.response.status === 401) {
+            this.pause()
+            return
+          }
+        }
       }
     }
 
