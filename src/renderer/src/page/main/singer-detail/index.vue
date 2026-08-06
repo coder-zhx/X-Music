@@ -6,16 +6,20 @@ import playService from '@renderer/service/playService'
 import userDataService from '@renderer/service/userDataService'
 import { Singer } from '@renderer/common/types/music'
 import appService from '@renderer/service/appService'
+import { useAppStore } from '@renderer/stores/app'
 import { useUserStore } from '@renderer/stores/user'
 import { likeSinger } from '@renderer/common/api'
 import { message } from 'ant-design-vue'
 import logService from '@renderer/service/logService'
+import downloadService from '@renderer/service/downloadService'
+import { FileNameFormat } from '@renderer/common/enums/common'
 
 defineOptions({
   name: 'SingerDetail',
 })
 
 const route = useRoute()
+const appStore = useAppStore()
 const userStore = useUserStore()
 
 const detailLoading = ref(false)
@@ -68,6 +72,39 @@ async function toggle() {
   }
 }
 
+/**
+ * 下载全部歌曲
+ */
+function download() {
+  const tasks = detail.value?.songList?.map((song) => {
+    return {
+      type: 'song',
+      name: getFileName(song),
+      id: song.id,
+      extra: song,
+      br: appStore.systemConfig.downloadBr,
+      downloadLyric: appStore.systemConfig.downloadLyric,
+    }
+  })
+  downloadService.addTasks(tasks as any)
+  message.success('已添加到下载队列')
+}
+
+function getFileName(song) {
+  const songName = song.name
+  const singerName = song.ar[0]?.name
+  switch (appStore.systemConfig.fileNameFormat) {
+    case FileNameFormat.songName:
+      return songName
+    case FileNameFormat.songName_singerName:
+      return songName + (singerName ? '-' + singerName : '')
+    case FileNameFormat.singerName_songName:
+      return (singerName ? singerName + '-' : '') + songName
+    default:
+      return songName
+  }
+}
+
 onActivated(() => {
   appService.showAppBg()
 })
@@ -100,7 +137,11 @@ onUnmounted(() => {
             <div class="alias">{{ detail.alias?.join('/') }}</div>
             <div class="desc">{{ detail.desc }}</div>
             <div class="btns">
-              <a-button type="primary" @click="playService.playSongs(detail.songList)">
+              <a-button
+                type="primary"
+                @click="playService.playSongs(detail.songList)"
+                :disabled="!detail.songList.length"
+              >
                 <Iconfont name="icon-play2"></Iconfont>
                 播放全部
               </a-button>
@@ -111,6 +152,10 @@ onUnmounted(() => {
               <a-button v-else :loading="likeLoading" @click="toggle">
                 <Iconfont v-if="!likeLoading" name="icon-love"></Iconfont>
                 收藏
+              </a-button>
+              <a-button @click="download" :disabled="!detail.songList.length">
+                <Iconfont name="icon-download"></Iconfont>
+                下载
               </a-button>
             </div>
           </div>

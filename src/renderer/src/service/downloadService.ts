@@ -165,6 +165,19 @@ class DownloadService {
     }
   }
 
+  addTasks(taskInfos: DownloadTask[]) {
+    const tasks: any[] = []
+    taskInfos.forEach((taskInfo) => {
+      if (this.taskList.value.some((task) => task.id === taskInfo.id)) return
+      const task = new Task(taskInfo)
+      tasks.push(task)
+    })
+    this.taskList.value = [...this.taskList.value, ...tasks]
+    if (this.paused.value) {
+      this.startAll()
+    }
+  }
+
   removeTask(uuid: string) {
     const task = this.taskList.value.find((task) => task.uuid === uuid)
     if (!task) return

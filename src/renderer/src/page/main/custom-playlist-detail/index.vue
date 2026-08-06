@@ -3,13 +3,16 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import userDataService from '@renderer/service/userDataService'
 import playService from '@renderer/service/playService'
+import downloadService from '@renderer/service/downloadService'
 import { Song } from '@renderer/common/types/music'
 import { cloneDeep } from 'lodash-es'
 import useModal from '@renderer/hooks/useModal'
 import CreatePlaylist from '@renderer/components/create-playlist.vue'
 import { deletePlaylist, getPlaylistDetail, operatePlaylist } from '@renderer/common/api'
+import { useAppStore } from '@renderer/stores/app'
 import { useUserStore } from '@renderer/stores/user'
 import { message } from 'ant-design-vue'
+import { FileNameFormat } from '@renderer/common/enums/common'
 
 defineOptions({
   name: 'CustomPlaylistDetail',
@@ -18,6 +21,7 @@ defineOptions({
 const route = useRoute()
 const router = useRouter()
 const Modal = useModal()
+const appStore = useAppStore()
 const userStore = useUserStore()
 const playlistId = route.params.id as string
 
@@ -48,6 +52,39 @@ async function getData() {
       userDataService.customPlaylists.value.find((playlist) => playlist.id === playlistId),
     )
     list.value = await userDataService.getCustomPlaylistSongs(playlistId)
+  }
+}
+
+/**
+ * 下载全部歌曲
+ */
+function download() {
+  const tasks = list.value?.map((song) => {
+    return {
+      type: 'song',
+      name: getFileName(song),
+      id: song.id,
+      extra: song,
+      br: appStore.systemConfig.downloadBr,
+      downloadLyric: appStore.systemConfig.downloadLyric,
+    }
+  })
+  downloadService.addTasks(tasks as any)
+  message.success('已添加到下载队列')
+}
+
+function getFileName(song) {
+  const songName = song.name
+  const singerName = song.ar[0]?.name
+  switch (appStore.systemConfig.fileNameFormat) {
+    case FileNameFormat.songName:
+      return songName
+    case FileNameFormat.songName_singerName:
+      return songName + (singerName ? '-' + singerName : '')
+    case FileNameFormat.singerName_songName:
+      return (singerName ? singerName + '-' : '') + songName
+    default:
+      return songName
   }
 }
 
@@ -161,6 +198,10 @@ function handleEdit() {
             <a-button type="primary" @click="playService.playSongs(list)" :disabled="!list.length">
               <Iconfont name="icon-play2"></Iconfont>
               播放全部
+            </a-button>
+            <a-button @click="download" :disabled="!list.length">
+              <Iconfont name="icon-download"></Iconfont>
+              下载
             </a-button>
             <a-button @click="handleEdit" v-if="canEdit">
               <Iconfont name="icon-edit"></Iconfont>

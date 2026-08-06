@@ -94,16 +94,17 @@ async function getComments() {
  * 下载全部歌曲
  */
 function download() {
-  detail.value?.tracks.map((song) => {
-    downloadService.addTask({
+  const tasks = detail.value?.tracks?.map((song) => {
+    return {
       type: 'song',
       name: getFileName(song),
       id: song.id,
       extra: song,
       br: appStore.systemConfig.downloadBr,
       downloadLyric: appStore.systemConfig.downloadLyric,
-    })
+    }
   })
+  downloadService.addTasks(tasks as any)
   message.success('已添加到下载队列')
 }
 
@@ -203,7 +204,11 @@ onUnmounted(() => {
               >
             </div>
             <div class="btns">
-              <a-button type="primary" @click="playService.playSongs(detail.tracks)">
+              <a-button
+                type="primary"
+                @click="playService.playSongs(detail.tracks)"
+                :disabled="!detail.tracks.length"
+              >
                 <Iconfont name="icon-play2"></Iconfont>
                 播放全部
               </a-button>
@@ -217,7 +222,7 @@ onUnmounted(() => {
                   收藏
                 </a-button>
               </template>
-              <a-button @click="download">
+              <a-button @click="download" :disabled="!detail.tracks.length">
                 <Iconfont name="icon-download"></Iconfont>
                 下载
               </a-button>
