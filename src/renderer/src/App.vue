@@ -29,6 +29,7 @@ subscribeError((error) => {
       break
     case 401:
       if (error.config.url.includes('https://music.gdstudio.org/api.php')) {
+        logService.log('api_401')
         showPlayErrorModal()
       }
       break
@@ -71,8 +72,7 @@ async function init() {
 function showPlayErrorModal() {
   const modal = Modal.create({
     title: '播放错误',
-    content:
-      '无法获取音乐资源，请等待软件修复，您可检查是否有版本更新，或者在github上提issue反馈问题',
+    content: '当前版本无法获取音乐资源，请安装最新版本！如无新版本，请等待发布。',
     footer: [
       {
         text: '取消',
@@ -82,22 +82,22 @@ function showPlayErrorModal() {
         },
       },
       {
-        text: '去反馈',
+        text: '反馈问题',
         type: 'default',
         onClick: () => {
           window.open('https://github.com/coder-zhx/X-Music')
         },
       },
       {
-        text: '查看github',
-        type: 'default',
+        text: '下载新版(github)',
+        type: 'primary',
         onClick: () => {
           window.open('https://github.com/coder-zhx/X-Music/releases')
         },
       },
       {
-        text: '查看网盘',
-        type: 'default',
+        text: '下载新版(网盘)',
+        type: 'primary',
         onClick: () => {
           window.open('https://pan.quark.cn/s/072af8782c97?entry=webother#/list/share')
         },
